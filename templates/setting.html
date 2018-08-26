@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block aside %}
+                <ul class="sidebar-menu tree" data-widget="tree">
+					<li class="header">功能菜单</li>
+					<li>
+						<a href="{% url 'index' %}">
+							<i class="fa fa-dashboard"></i>
+							<span>主界面</span>
+							<span class="pull-right-container"></span>
+						</a>
+					</li>
+					<li class="treeview">
+						<a href="#">
+							<i class="fa fa-area-chart"></i>
+							<span>能耗监测</span>
+							<span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+						</a>
+						<ul class="treeview-menu">
+
+							<li>
+								<a href="/device-list">
+									<i class="fa fa-circle-o"></i>
+									设备概览
+								</a>
+							</li>
+						</ul>
+					</li>
+					<li class="treeview">
+						<a href="#">
+							<i class="fa fa-pie-chart"></i>
+							<span>用能分析</span>
+							<span class="pull-right-container">
+								<i class="fa fa-angle-left pull-right"></i>
+							</span>
+						</a>
+						<ul class="treeview-menu">
+							<li>
+								<a href="/eranking">
+									<i class="fa fa-circle-o"></i>
+									能耗排名
+								</a>
+							</li>
+							<li>
+								<a href="/ecompare">
+									<i class="fa fa-circle-o"></i>
+									能耗对比
+								</a>
+							</li>
+						</ul>
+					</li>
+					<li class="treeview">						<a href="#">							<i class="fa fa-pie-chart"></i>							<span>报表管理</span>							<span class="pull-right-container">								<i class="fa fa-angle-left pull-right"></i>							</span>						</a>						<ul class="treeview-menu">							<li>								<a href="/reports">									<i class="fa fa-circle-o"></i>									单项报表								</a>							</li>							<li>								<a href="/allreports">									<i class="fa fa-circle-o"></i>									综合报表								</a>							</li>						</ul>					</li>
+                    <li>
+						<a href="http://datav.aliyun.com/share/74d0eb560674cd0390be32da5a9d875f">
+							<i class="fa fa-table"></i>
+							<span>数据大屏</span>
+							<span class="pull-right-container"></span>
+						</a>
+					</li>
+					<li class="active">
+						<a href="{% url 'setting' %}">
+							<i class="fa fa-cog"></i>
+							<span>系统设置</span>
+							<span class="pull-right-container"></span>
+						</a>
+					</li>
+				</ul>
+{% endblock %}
+
+{% block main %}
+    <section class="content-header">
+        <h1>系统设置</h1>
+    </section>
+    <section class="content">
+        <div><a href="{% url 'password_change' %}">修改密码</a></div>
+    </section>
+
+
+{% endblock main %}

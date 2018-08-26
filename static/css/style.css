@@ -1,0 +1,23 @@
+.device{
+  height: 180px;
+  width: 210px;
+  float: left;
+  padding: 20px;
+  margin: 20px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.green{
+  color: green;
+  font-weight: bold;
+}
+.yellow{
+  color: #FFCC22;
+  font-weight: bold;
+}
+.red{
+  color: red;
+  font-weight: bold;
+}

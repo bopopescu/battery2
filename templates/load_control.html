@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+{% block aside %}
+    <ul class="sidebar-menu tree" data-widget="tree">
+    <li class="header">功能菜单</li>
+{#    <li>#}
+{#        <a href="{% url 'index' %}">#}
+{#            <i class="fa fa-dashboard"></i>#}
+{#            <span>主界面</span>#}
+{#            <span class="pull-right-container"></span>#}
+{#        </a>#}
+{#    </li>#}
+    <li>
+        <a href="{% url 'monitor' %}">
+            <i class="fa fa-dashboard"></i>
+            <span>运行状态监测</span>
+            <span class="pull-right-container"></span>
+        </a>
+    </li>
+    <li class="treeview active menu-open">
+        <a href="#">
+            <i class="fa fa-area-chart"></i>
+            <span>测试系统控制</span>
+            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li class="active">
+                <a href="{% url 'control' %}">
+                    <i class="fa fa-circle-o"></i>
+                    电子负载控制
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'oven_control' %}">
+                    <i class="fa fa-circle-o"></i>
+                    电炉控制
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'gas_control' %}">
+                    <i class="fa fa-circle-o"></i>
+                    气流量控制
+                </a>
+            </li>
+        </ul>
+
+    </li>
+{% endblock %}
+{% block main %}
+    <section class="content">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="col-lg-12">
+                    <div class="btn-group" role="group" aria-label="...">
+                        <button type="button" class="btn btn-primary" onclick="show_old_scheme()" data-toggle="modal"
+                                data-target="#new_scheme_dialog">
+                            查看电子负载测试方案
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="create_new_scheme()"
+                                data-toggle="modal" data-target="#new_scheme_dialog">
+                            新建电子负载测试方案
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="table-responsive">
+                    <table id="old-scheme-table" class="table">
+                        <thead class="thead-dark">
+                        <th>#</th>
+                        <th>电子负载测试方案名</th>
+                        <th>电子负载测试方案id</th>
+                        </thead>
+                        <tbody id="old-scheme-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="row" style="margin-left:0px">
+            <div class="col-lg-12">
+
+                <span>箱号：</span>
+                <select id="box_num_selected" onchange="show_channel()">
+                </select>
+                &nbsp;&nbsp;
+
+                <span>通道号：</span>
+                <select id="channel_num_selected">
+                </select>
+
+                &nbsp;&nbsp;
+                <span>电子负载方案id：</span>
+                <select id="scheme_num_selected">
+                    {#                    <option value="1">1</option>#}
+                    {#                    <option value="2">2</option>#}
+                    {#                    <option value="3">3</option>#}
+                    {#                    <option value="4">4</option>#}
+                </select>
+                &nbsp;&nbsp;
+                &nbsp;&nbsp;
+                <button type="button" class="btn btn-success" onclick="start_channel()">启动电子负载
+                </button>
+
+                {#                <button type="button" class="btn btn-danger" style="width: 120px" onclick="stop_channel()">停止通道</button>#}
+                {#                <button type="button" class="btn btn-warning" style="width: 120px" onclick="pause_channel()">暂停通道</button>#}
+            </div>
+        </div>
+
+        <div class="modal fade" id="new_scheme_dialog" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalCenterTitle"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title" id="exampleModalLongTitle">查看/新建测试方案</h2>
+                        {#                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">#}
+                        {#                            <span aria-hidden="true">&times;</span>#}
+                        {#                        </button>#}
+                    </div>
+                    <div class="modal-body">
+                        <div id="status-dialog-content" class="container-fluid">
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <span>新建电子负载测试方案名：</span>
+                                    <input type="text" id="new-scheme-name">
+                                    <button type="button" class="btn btn-success" onclick="save_scheme()"
+                                            data-dismiss="modal">保存电子负载测试方案
+                                    </button>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="table-responsive">
+                                    <table id="test-scheme-table" class="table">
+                                        <thead class="thead-dark" id="table_head">
+                                        <tr id="table-head-content">
+                                            <th scope="col" id="schemeID_th">#</th>
+                                            <th scope="col" id="step_th">No.</th>
+                                            <th scope="col" id="LoadMode_th">负载工作模式</th>
+                                            <th scope="col" id="U_th">电压/mV</th>
+                                            <th scope="col" id="I_th">电流/mA</th>
+                                            <th scope="col" id="tLM_th">时间限制/s</th>
+                                            <th scope="col" id="ULM_th">电压限制/mV</th>
+                                            <th scope="col" id="ILM_th">电流限制/mA</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="new-scheme-table-body">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="btn-group" role="group" aria-label="...">
+                                        <button type="button" class="btn btn-primary" onclick="create_new_row()">新建工步
+                                        </button>
+                                        <button type="button" class="btn btn-info" onclick="insert_row()">在上方插入工步
+                                        </button>
+                                        <button type="button" class="btn btn-info" onclick="row_go_down()">工步下移</button>
+                                        <button type="button" class="btn btn-info" onclick="row_go_up()">工步上移</button>
+                                        <button type="button" class="btn btn-danger" onclick="delete_row()">删除工步
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+{% endblock main %}
+
+{% block js %}
+    <script src="/static/js/common/bootstrap-table.min.js"></script>
+    <script src="/static/js/common/bootstrap-table-zh-CN.min.js"></script>
+    <script src="/static/js/common/bootstrap-table-export.min.js"></script>
+    <script src="/static/js/control.js"></script>
+
+
+    <script>
+        $(document).ready(function () {
+            get_boxes();
+            show_old_scheme_table();
+            create_new_row();
+        });
+
+        function show_new_scheme_dialog() {
+
+        }
+    </script>
+
+{% endblock js %}

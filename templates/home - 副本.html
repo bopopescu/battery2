@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>主页</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="stylesheet" type="text/css" href="http://apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css">
+    <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script type="text/javascript" src="http://apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/build/dist/echarts-all.js"></script>
+    <script type="text/javascript" src="/static/js/dynamo.js"></script>
+    <script type="text/javascript" src="/static/js/home.js"></script>
+    <script type="text/javascript" src="/static/js/charts.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-3 col-sm-3 col-lg-3 col-xs-3 leftbar">
+            <div class="logo">
+                <img class="img-responsive center-block" src="/static/img/logo.png" alt="智能楼宇">
+            </div>
+            <div class="text-center">
+                <ul class="nav nav-pills nav-stacked navbar">
+                    <li><a class="glyphicon glyphicon-home" href="home.html">主界面</a></li>
+                    <li><a class="glyphicon glyphicon-download-alt" href="topology.html">网络拓扑管理</a></li>
+                    <li><a class="glyphicon glyphicon-download-alt" href="realData.html">实时数据监测</a></li>
+                    <li><a class="glyphicon glyphicon-time" href="historyData.html">历史数据查询</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-9 col-sm-9 col-lg-9 col-xs-9">
+            <div class="rightbartop">
+                <div class="col-md-6">
+                    <div class="jktime">
+                        <span>智能楼宇实时监控系统</span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="company">清华大学能源互联网研究院</div>
+                </div>
+            </div>
+            <div class="rightbardown">
+                <div class="title_page">
+                    <h2>网络拓扑</h2>
+					<h1>{{ para1 }}</h1>
+					<h1>{{ static_dir }}</h1>
+                </div>
+                <hr>
+                <div class="col-md-9">
+                    <img class="svg_img" src="/img/topo.svg"></img>
+                </div>
+                <div class="col-md-3">
+                    <h3>实时能耗</h3>
+                    <hr>
+                    <h4>用电量</h4>
+                    <div class="yl_data" id="ydl_data">23.4KW</div>
+                    <hr>
+                    <h4>用水量</h4>
+                    <div class="yl_data" id="ysl_data">23.4L/S</div>
+                    <hr>
+                    <h4>用气量</h4>
+                    <div class="yl_data" id="yql_data">3.4Nm³/s</div>
+                </div>
+
+            </div>
+
+        </div>
+        <div></div>
+
+    </div>
+</div>
+</body>
+</html>

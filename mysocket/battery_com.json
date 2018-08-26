@@ -1,0 +1,13 @@
+battery = 
+{
+	"cellNum":3	
+	"cellInfo":
+	[
+		{
+			"cellID": 10001,			
+			"eload":{"ip":"192.168.0.2","com":3092},
+			"meter":{},
+			
+		}
+	]	
+}

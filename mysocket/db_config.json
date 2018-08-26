@@ -1,0 +1,14 @@
+{
+	"host":"localhost",
+	"port":"3306",
+	"user":"root",
+	"passwd":"123456",
+	"db":"battery",
+	"cellDeviceTable":"apps_celldevicetable",
+	"boxDeviceTable":"apps_boxdevicetable",
+	"gasDeviceTable":"apps_gasdevicetable",
+	"temDeviceTable":"apps_temdevicetable",
+	"boxHistoryDataTable":"apps_boxdevicehistorydata",
+	"temHistoryDataTable":"apps_temdevicehistorydata",
+	"gasHistoryDataTable":"apps_gasdevicehistorydata"
+}

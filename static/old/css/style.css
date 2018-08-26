@@ -1,0 +1,46 @@
+.row{}
+.leftbar{}
+.dataList{width:100%}
+.topoSvg{width:100%; height:auto}
+.rightbartop{background-color : #337ab7;height: 80px;}
+.rightbardown{height: auto;}
+#echarts{height: 400px;}
+.echarts{height: 400px;}
+.logo{padding: 20px 30px;height:auto}
+.title_page{height: 25px;}
+.svg_img{height: 100%; width: 100%;}
+.yl_data{font-size: 20px; color: blue;}
+/*
+.nav{
+	font-size: 25px;
+	font-family: "微软雅黑";
+	color: #FF0;
+}
+.nav a:link .nav a:visited{color: #FF0;text-decoration: none;}
+.nav a:hover{color: #FFF;text-decoration: none;}
+.nav a:active{color: #FFF;text-decoration: none;}
+*/
+
+
+.navbar{
+    font-size: 16px;
+}
+
+.jktime{float: left; line-height: 100px;color: #FFFFFF;}
+.company{float: right; line-height: 100px; color: #FFFFFF;}
+
+
+
+/* bootstrap*/
+.tab-content > .tab-pane,
+.pill-content > .pill-pane {
+
+    display: block;     /* undo display:none          */
+    height: 0;          /* height:0 is also invisible */
+    overflow-y: hidden; /* no-overflow                */
+}
+.tab-content > .active,
+.pill-content > .active {
+
+    height: auto; /* let the content decide it */
+} /* bootstrap hack end*/

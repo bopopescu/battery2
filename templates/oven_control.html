@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+{% block aside %}
+    <ul class="sidebar-menu tree" data-widget="tree">
+    <li class="header">功能菜单</li>
+{#   <li>#}
+{#        <a href="{% url 'index' %}">#}
+{#            <i class="fa fa-dashboard"></i>#}
+{#            <span>主界面</span>#}
+{#            <span class="pull-right-container"></span>#}
+{#        </a>#}
+{#    </li>#}
+    <li>
+        <a href="{% url 'monitor' %}">
+            <i class="fa fa-dashboard"></i>
+            <span>运行状态监测</span>
+            <span class="pull-right-container"></span>
+        </a>
+    </li>
+    <li class="treeview active menu-open">
+        <a href="#">
+            <i class="fa fa-area-chart"></i>
+            <span>测试系统控制</span>
+            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li>
+                <a href="{% url 'control' %}">
+                    <i class="fa fa-circle-o"></i>
+                    电子负载控制
+                </a>
+            </li>
+            <li class="active">
+                <a href="{% url 'oven_control' %}">
+                    <i class="fa fa-circle-o"></i>
+                    电炉控制
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'gas_control' %}">
+                    <i class="fa fa-circle-o"></i>
+                    气流量控制
+                </a>
+            </li>
+        </ul>
+
+    </li>
+{% endblock %}
+{% block main %}
+    <section class="content">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="col-lg-12">
+                    <div class="btn-group" role="group" aria-label="...">
+                        <button type="button" class="btn btn-primary" onclick="show_old_oven_scheme()"
+                                data-toggle="modal" data-target="#new_oven_scheme_dialog">
+                            查看电炉方案
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="create_new_oven_scheme()"
+                                data-toggle="modal" data-target="#new_oven_scheme_dialog">
+                            新建电炉方案
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <hr>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="table-responsive">
+                    <table id="old-oven-scheme-table" class="table">
+                        <thead class="thead-dark">
+                        <th>#</th>
+                        <th>电炉方案名</th>
+                        <th>电炉方案id</th>
+                        </thead>
+                        <tbody id="old-oven-scheme-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="margin-left:0px">
+            <div class="col-lg-12">
+{##}
+{#                <span>箱号：</span>#}
+{#                <select id="box_num_selected" onchange="show_channel()">#}
+{#                </select>#}
+{#                &nbsp;&nbsp;#}
+{##}
+{#                <span>通道号：</span>#}
+{#                <select id="channel_num_selected" onchange="show_oven()">#}
+{#                </select>#}
+
+                &nbsp;&nbsp;
+                <span>电炉id：</span>
+                <select id="oven_num_selected">
+                    {#                    <option value="1">1</option>#}
+                    {#                    <option value="2">2</option>#}
+                    {#                    <option value="3">3</option>#}
+                    {#                    <option value="4">4</option>#}
+                </select>
+                &nbsp;&nbsp;
+                <span>电炉方案id：</span>
+                <select id="oven_scheme_num_selected">
+                    {#                    <option value="1">1</option>#}
+                    {#                    <option value="2">2</option>#}
+                    {#                    <option value="3">3</option>#}
+                    {#                    <option value="4">4</option>#}
+                </select>
+                &nbsp;&nbsp;
+                <button type="button" class="btn btn-danger" style="width: 120px" onclick="start_oven()">启动电炉</button>
+                <button type="button" class="btn btn-danger" style="width: 120px" onclick="pause_oven()">暂停电炉</button>
+                <button type="button" class="btn btn-success" style="width: 120px" onclick="stop_oven()">停止电炉</button>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="new_oven_scheme_dialog" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalCenterTitle"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title" id="exampleModalLongTitle">查看/新建测试方案</h2>
+                        {#                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">#}
+                        {#                            <span aria-hidden="true">&times;</span>#}
+                        {#                        </button>#}
+                    </div>
+                    <div class="modal-body">
+                        <div id="status-dialog-content" class="container-fluid">
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <span>新建电炉测试方案名：</span>
+                                    <input type="text" id="new-oven-scheme-name">
+                                    <button type="button" class="btn btn-success" onclick="save_oven_scheme()"
+                                            data-dismiss="modal">
+                                        保存电炉负载测试方案
+                                    </button>
+                                </div>
+                            </div>
+
+
+                            <hr>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="table-responsive">
+                                        <table id="test-oven-scheme-table" class="table">
+                                            <thead class="thead-dark" id="oven_table_head">
+                                            <tr id="oven-table-head-content">
+                                                <th scope="col" id="schemeID_th">#</th>
+                                                <th scope="col" id="step_th">No.</th>
+                                                <th scope="col" id="LoadMode_th">目标温度/&#176C</th>
+                                                <th scope="col" id="U_th">持续时间/min</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="new-oven-scheme-table-body">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="btn-group" role="group" aria-label="...">
+                                        <button type="button" class="btn btn-primary" onclick="oven_create_new_row()">
+                                            新建工步
+                                        </button>
+                                        <button type="button" class="btn btn-info" onclick="oven_insert_row()">在上方插入工步
+                                        </button>
+                                        <button type="button" class="btn btn-info" onclick="oven_row_go_down()">工步下移
+                                        </button>
+                                        <button type="button" class="btn btn-info" onclick="oven_row_go_up()">工步上移
+                                        </button>
+                                        <button type="button" class="btn btn-danger" onclick="oven_delete_row()">删除工步
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+{% endblock main %}
+
+{% block js %}
+    <script src="/static/js/common/bootstrap-table.min.js"></script>
+    <script src="/static/js/common/bootstrap-table-zh-CN.min.js"></script>
+    <script src="/static/js/common/bootstrap-table-export.min.js"></script>
+    <script src="/static/js/control.js"></script>
+    <script>
+        $(document).ready(function () {
+            get_boxes();
+            show_old_oven_scheme_table();
+            oven_create_new_row();
+        });
+    </script>
+{% endblock js %}

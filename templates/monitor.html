@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+{% block css %}
+{% endblock %}
+
+{% block aside %}
+    <ul class="sidebar-menu tree" data-widget="tree">
+    <li class="header">功能菜单</li>
+    {#    <li>#}
+    {#        <a href="{% url 'index' %}">#}
+    {#            <i class="fa fa-dashboard"></i>#}
+    {#            <span>主界面</span>#}
+    {#            <span class="pull-right-container"></span>#}
+    {#        </a>#}
+    {#    </li>#}
+    <li class="active">
+        <a href="{% url 'monitor' %}">
+            <i class="fa fa-dashboard"></i>
+            <span>运行状态监测</span>
+            <span class="pull-right-container"></span>
+        </a>
+    </li>
+    <li class="treeview">
+        <a href="#">
+            <i class="fa fa-area-chart"></i>
+            <span>测试系统控制</span>
+            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li>
+                <a href="{% url 'control' %}">
+                    <i class="fa fa-circle-o"></i>
+                    电子负载控制
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'oven_control' %}">
+                    <i class="fa fa-circle-o"></i>
+                    电炉控制
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'gas_control' %}">
+                    <i class="fa fa-circle-o"></i>
+                    气流量控制
+                </a>
+            </li>
+        </ul>
+    </li>
+{% endblock %}
+{% block main %}
+    <section class="content">
+        <div class="row">
+            <div class="col-lg-12">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label for="box_num_selected">箱号</label>
+                        <select class="form-control" id="box_num_selected" onchange="show_channel()"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="channel_num_selected">通道号</label>
+                        <select class="form-control" id="channel_num_selected"></select>
+                    </div>
+                    <button type="button" class="btn btn-default" onclick="refresh_page()">确认</button>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon1">刷新间隔</span>
+                        <input type="text" class="form-control" placeholder="输入整数（ms），最小3000" aria-describedby="basic-addon1"
+                               id="refresh-int">
+                        <span class="input-group-btn">
+                    <button class="btn btn-secondary" type="button" onclick="set_interval()">设置</button>
+                    <button class="btn btn-secondary" type="button" onclick="stop_refresh()">停止刷新</button>
+                    </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-lg-12">
+                <span>状态：</span>
+                <span class="badge badge-success" id="testline_status"></span>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <div class="btn-group" role="group" aria-label="...">
+                    <button type="button" class="btn btn-success" onclick="continue_testline()">继续</button>
+                    <button type="button" class="btn btn-warning" onclick="pause_testline()">暂停</button>
+                    <button type="button" class="btn btn-danger" onclick="stop_testline()">停止</button>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <hr>
+
+        <div class="row">
+            <ul id="myTab" class="nav nav-tabs">
+                <li class="active">
+                    <a href="#briefinfo" data-toggle="tab">
+                        状态概览
+                    </a>
+                </li>
+                <li class="dropdown">
+                    <a href="#" id="myTabDrop1" class="dropdown-toggle"
+                       data-toggle="dropdown">监测图表
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
+                        <li><a href="#UIchart" tabindex="-1" data-toggle="tab">电流/电压</a></li>
+                        <li><a href="#Tchart" tabindex="-1" data-toggle="tab">温度</a></li>
+                        <li><a href="#Qchart" tabindex="-1" data-toggle="tab">气流量</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <div id="myTabContent" class="tab-content">
+                <div class="tab-pane fade in active" id="briefinfo">
+
+                    <div class="col-lg-2 col-xs-4" style="margin-left:0px;padding:0px 5px 0px 0px">
+                        <div class="small-box bg-orange">
+                            <div class="inner" id="I">
+                                <p id="I_name">电流</p>
+                                <p style="font-size:20px;line-height:10px;"><span id="I_val">0</span> <sup
+                                        style="font-size: 12px">mA</sup></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-xs-4" style="margin-left:0px;padding:0px 5px 0px 0px">
+                        <div class="small-box bg-orange" style="height:">
+                            <div class="inner" id="U">
+                                <p id="U_name">电压</p>
+                                <p style="font-size:20px;line-height:10px;"><span id="U_val">0</span> <sup
+                                        style="font-size: 12px">mV</sup></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-xs-4" style="margin-left:0px;padding:0px 5px 0px 0px">
+                        <div class="small-box bg-orange">
+                            <div class="inner" id="Q_H2">
+                                <p id="Q_H2_name">氢气流量</p>
+                                <p style="font-size:20px;line-height:10px;"><span id="Q_H2_val">0</span> <sup
+                                        style="font-size: 12px">ccm</sup></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-xs-4" style="margin-left:0px;padding:0px 5px 0px 0px">
+                        <div class="small-box bg-orange">
+                            <div class="inner" id="Q_N2">
+                                <p id="Q_N2_name">氮气流量</p>
+                                <p style="font-size:20px;line-height:10px;"><span id="Q_N2_val">0</span> <sup
+                                        style="font-size: 12px">ccm</sup></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-xs-4" style="margin-left:0px;padding:0px 5px 0px 0px">
+                        <div class="small-box bg-orange">
+                            <div class="inner" id="Q_Air">
+                                <p id="Q_Air_name">空气流量</p>
+                                <p style="font-size:20px;line-height:10px;"><span id="Q_Air_val">0</span> <sup
+                                        style="font-size: 12px">ccm</sup></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-xs-4" style="margin-left:0px;padding:0px 5px 0px 0px">
+                        <div class="small-box bg-orange">
+                            <div class="inner" id="Q_CH4">
+                                <p id="Q_CH4_name">甲烷流量</p>
+                                <p style="font-size:20px;line-height:10px;"><span id="Q_CH4_val">0</span> <sup
+                                        style="font-size: 12px">ccm</sup>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-xs-4" style="margin-left:0px;padding:0px 5px 0px 0px">
+                        <div class="small-box bg-orange">
+                            <div class="inner" id="Q_CO2">
+                                <p id="Q_CO2_name">二氧化碳流量</p>
+                                <p style="font-size:20px;line-height:10px;"><span id="Q_CO2_val">0</span> <sup
+                                        style="font-size: 12px">ccm</sup></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-xs-4" style="margin-left:0px;padding:0px 5px 0px 0px">
+                        <div class="small-box bg-orange">
+                            <div class="inner" id="Q_CO2">
+                                <p id="Q_H2O_name">水蒸气流量</p>
+                                <p style="font-size:20px;line-height:10px;"><span id="Q_H2O_val">0</span> <sup
+                                        style="font-size: 12px">ccm</sup></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-xs-4" style="margin-left:0px;padding:0px 5px 0px 0px">
+                        <div class="small-box bg-orange">
+                            <div class="inner" id="T">
+                                <p id="T_name">控温点温度</p>
+                                <p style="font-size:20px;line-height:10px;"><span id="T0_val">0</span> <sup
+                                        style="font-size: 12px">&#176C</sup></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-xs-4" style="margin-left:0px;padding:0px 5px 0px 0px">
+                        <div class="small-box bg-orange">
+                            <div class="inner" id="q">
+                                <p id="q_name">容量</p>
+                                <p style="font-size:20px;line-height:10px;"><span id="q_val">0</span> <sup
+                                        style="font-size: 12px">C(mAh)</sup></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-xs-4" style="margin-left:0px;padding:0px 5px 0px 0px">
+                        <div class="small-box bg-orange">
+                            <div class="inner" id="k">
+                                <p id="k_name">当前工步号</p>
+                                <p style="font-size:20px;line-height:10px;"><span id="k_val">0</span> <sup
+                                        style="font-size: 12px"></sup></p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="tab-pane fade" id="UIchart">
+                    <div id="U_I_t_chart" style="height: 400px;width:800px;"></div>
+                </div>
+                <div class="tab-pane fade" id="Tchart">
+                    <div id="T_t_chart" style="height: 400px;width:800px;"></div>
+                </div>
+                <div class="tab-pane fade" id="Qchart">
+                    <div id="Q_t_chart" style="height: 400px;width:800px;"></div>
+                </div>
+            </div>
+        </div>
+
+
+        <hr>
+
+
+        <div class="row">
+            <div class="table-responsive">
+                <table class="table" id="test_scheme_table">
+                    <thead class="thead-dark" id="table_head">
+                    <tr>
+                        <th scope="col" id="schemeID_th">方案号</th>
+                        <th scope="col" id="step_th">No.</th>
+                        <th scope="col" id="LoadMode_th">负载工作模式</th>
+                        <th scope="col" id="U_th">电压/mV</th>
+                        <th scope="col" id="I_th">电流/mA</th>
+                        <th scope="col" id="tLM_th">时间限制/s</th>
+                        <th scope="col" id="ULM_th">电压限制/mV</th>
+                        <th scope="col" id="ILM_th">电流限制/mA</th>
+                    </tr>
+                    </thead>
+                    <tbody id="table_body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <hr>
+
+
+    </section>
+{% endblock main %}
+
+{% block js %}
+    <script src="/static/js/monitor.js"></script>
+{% endblock js %}
+
