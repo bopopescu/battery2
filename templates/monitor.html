@@ -66,7 +66,8 @@
                     &nbsp;&nbsp;&nbsp;&nbsp;
                     <div class="input-group">
                         <span class="input-group-addon" id="basic-addon1">刷新间隔</span>
-                        <input type="text" class="form-control" placeholder="输入整数（ms），最小3000" aria-describedby="basic-addon1"
+                        <input type="text" class="form-control" placeholder="输入整数（ms），最小3000"
+                               aria-describedby="basic-addon1"
                                id="refresh-int">
                         <span class="input-group-btn">
                     <button class="btn btn-secondary" type="button" onclick="set_interval()">设置</button>
@@ -79,7 +80,7 @@
         <hr>
         <div class="row">
             <div class="col-lg-12">
-                <span>状态：</span>
+                <span>当前通道状态：</span>
                 <span class="badge badge-success" id="testline_status"></span>
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <div class="btn-group" role="group" aria-label="...">
@@ -96,7 +97,12 @@
             <ul id="myTab" class="nav nav-tabs">
                 <li class="active">
                     <a href="#briefinfo" data-toggle="tab">
-                        状态概览
+                        通道实时数据
+                    </a>
+                </li>
+                <li class="">
+                    <a href="#testscheme" data-toggle="tab">
+                        通道测试方案
                     </a>
                 </li>
                 <li class="dropdown">
@@ -108,6 +114,25 @@
                         <li><a href="#UIchart" tabindex="-1" data-toggle="tab">电流/电压</a></li>
                         <li><a href="#Tchart" tabindex="-1" data-toggle="tab">温度</a></li>
                         <li><a href="#Qchart" tabindex="-1" data-toggle="tab">气流量</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" id="myTabDrop2" class="dropdown-toggle"
+                       data-toggle="dropdown">设备信息
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
+                        <li><a href="#oven_status" tabindex="-1" data-toggle="tab">电炉状态</a></li>
+                        <li><a href="#device_relation" tabindex="-1" data-toggle="tab">电池信息</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" id="myTabDrop3" class="dropdown-toggle"
+                       data-toggle="dropdown">测试记录
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop3">
+                        <li><a href="#tests_info" tabindex="-1" data-toggle="tab">测试记录</a></li>
                     </ul>
                 </li>
             </ul>
@@ -225,34 +250,122 @@
                 <div class="tab-pane fade" id="Qchart">
                     <div id="Q_t_chart" style="height: 400px;width:800px;"></div>
                 </div>
+                <div class="tab-pane fade" id="oven_status">
+                    <div class="col-lg-12" id="oven_status_div">
+                        <table class="table" id="oven_status_table">
+                            <thead class="thead-dark" id="oven_status_tablehead">
+                            <tr>
+                                <th scope="col">电炉编号</th>
+                                <th scope="col">当前状态</th>
+                                <th scope="col">目标状态</th>
+                                <th scope="col">当前温度</th>
+                                <th scope="col">使用方案</th>
+                            </tr>
+                            </thead>
+                            <tbody id="oven_status_tablebody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="tests_info">
+                    <div class="col-lg-12" id="tests_info_div">
+                        <table class="table" id="tests_info_table">
+                            <thead class="thead-dark" id="tests_info_tablehead">
+                            <tr>
+                                <th scope="col">父测试编号</th>
+                                <th scope="col">子测试编号</th>
+                                <th scope="col">电池编号</th>
+                                <th scope="col">箱号</th>
+                                <th scope="col">通道号</th>
+                                <th scope="col">负载方案编号</th>
+                                <th scope="col">电炉编号</th>
+                                <th scope="col">电炉方案编号</th>
+                                <th scope="col">H2流量计号</th>
+                                <th scope="col">N2流量计号</th>
+                                <th scope="col">H2O流量计号</th>
+                                <th scope="col">CO2流量计号</th>
+                                <th scope="col">CH4流量计号</th>
+                                <th scope="col">AIR流量计号</th>
+                                <th scope="col">开始时间</th>
+                                <th scope="col">结束时间</th>
+                            </tr>
+                            </thead>
+                            <tbody id="tests_info_tablebody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="device_relation">
+                    <div class="col-lg-12" id="device_relation_div">
+                        <table class="table" id="device_relation_table">
+                            <thead class="thead-dark" id="device_relation_tablehead">
+                            <tr>
+                                <th scope="col">电池编号</th>
+                                <th scope="col">所属箱号</th>
+                                <th scope="col">所属通道号</th>
+                                <th scope="col">所属电炉号</th>
+                                <th scope="col">H2流量计号</th>
+                                <th scope="col">N2流量计号</th>
+                                <th scope="col">H2O流量计号</th>
+                                <th scope="col">CO2流量计号</th>
+                                <th scope="col">CH4流量计号</th>
+                                <th scope="col">AIR流量计号</th>
+                                <th scope="col">温度计号</th>
+                            </tr>
+                            </thead>
+                            <tbody id="device_relation_tablebody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="testscheme">
+                    <div class="table-responsive">
+                        <table class="table" id="test_scheme_table">
+                            <thead class="thead-dark" id="table_head">
+                            <tr>
+                                <th scope="col" id="schemeID_th">方案号</th>
+                                <th scope="col" id="step_th">No.</th>
+                                <th scope="col" id="LoadMode_th">负载工作模式</th>
+                                <th scope="col" id="U_th">电压/mV</th>
+                                <th scope="col" id="I_th">电流/mA</th>
+                                <th scope="col" id="tLM_th">时间限制/s</th>
+                                <th scope="col" id="ULM_th">电压限制/mV</th>
+                                <th scope="col" id="ILM_th">电流限制/mA</th>
+                            </tr>
+                            </thead>
+                            <tbody id="table_body">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
 
 
-        <hr>
-
-
-        <div class="row">
-            <div class="table-responsive">
-                <table class="table" id="test_scheme_table">
-                    <thead class="thead-dark" id="table_head">
-                    <tr>
-                        <th scope="col" id="schemeID_th">方案号</th>
-                        <th scope="col" id="step_th">No.</th>
-                        <th scope="col" id="LoadMode_th">负载工作模式</th>
-                        <th scope="col" id="U_th">电压/mV</th>
-                        <th scope="col" id="I_th">电流/mA</th>
-                        <th scope="col" id="tLM_th">时间限制/s</th>
-                        <th scope="col" id="ULM_th">电压限制/mV</th>
-                        <th scope="col" id="ILM_th">电流限制/mA</th>
-                    </tr>
-                    </thead>
-                    <tbody id="table_body">
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <hr>
+        {#        <hr>#}
+        {##}
+        {##}
+        {#        <div class="row">#}
+        {#            <div class="table-responsive">#}
+        {#                <table class="table" id="test_scheme_table">#}
+        {#                    <thead class="thead-dark" id="table_head">#}
+        {#                    <tr>#}
+        {#                        <th scope="col" id="schemeID_th">方案号</th>#}
+        {#                        <th scope="col" id="step_th">No.</th>#}
+        {#                        <th scope="col" id="LoadMode_th">负载工作模式</th>#}
+        {#                        <th scope="col" id="U_th">电压/mV</th>#}
+        {#                        <th scope="col" id="I_th">电流/mA</th>#}
+        {#                        <th scope="col" id="tLM_th">时间限制/s</th>#}
+        {#                        <th scope="col" id="ULM_th">电压限制/mV</th>#}
+        {#                        <th scope="col" id="ILM_th">电流限制/mA</th>#}
+        {#                    </tr>#}
+        {#                    </thead>#}
+        {#                    <tbody id="table_body">#}
+        {#                    </tbody>#}
+        {#                </table>#}
+        {#            </div>#}
+        {#        </div>#}
+        {#        <hr>#}
 
 
     </section>

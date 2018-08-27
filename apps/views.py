@@ -58,6 +58,18 @@ def testline_status(request, box_num, channel_num):
     data = {"testline_status": cs}
     return JsonResponse(data)
 
+def oven_status(request):
+    data=get_oven_status_interface()
+    return JsonResponse(data)
+
+def cells_info(request):
+    data=get_cells_info_interface()
+    return JsonResponse(data)
+
+def tests_info(request):
+    data=get_tests_info_interface()
+    return JsonResponse(data)
+
 
 def get_testdata_from_start(request, box_num, channel_num):
     # 获取从测试开始的数据，返回一个具有多时间的数组
@@ -262,7 +274,9 @@ def set_gas(request, box_id, chn_id):
 class IndexView(View):
     def get(self, request):
         customer = 'finacial'
-        return render(request, "monitor.html")
+        #return render(request, "monitor.html")
         return render(request, "index.html", {
             "customer": customer,
         })
+
+

@@ -219,9 +219,11 @@ class cellPlanDetailTable(models.Model):
 class BigTestInfoTable(models.Model):
     name = models.CharField(max_length=40, verbose_name="测试名", default="name", blank=True, null=True)
     user = models.CharField(max_length=40, verbose_name="创建者", default="user", blank=True, null=True)
-    cellID = models.ForeignKey(cellDeviceTable, to_field='cellID', verbose_name="cellID", on_delete=models.CASCADE,null=True,blank=True)
-    boxID = models.ForeignKey(boxDeviceTable, to_field='ID', verbose_name="boxID", on_delete=models.CASCADE,null=True,blank=True)
-    chnNum = models.IntegerField(default=0, verbose_name="通道号",null=True,blank=True)
+    cellID = models.ForeignKey(cellDeviceTable, to_field='cellID', verbose_name="cellID", on_delete=models.CASCADE,
+                               null=True, blank=True)
+    boxID = models.ForeignKey(boxDeviceTable, to_field='ID', verbose_name="boxID", on_delete=models.CASCADE, null=True,
+                              blank=True)
+    chnNum = models.IntegerField(default=0, verbose_name="通道号", null=True, blank=True)
     H2ID = models.ForeignKey(H2DeviceTable, to_field='ID', verbose_name="H2ID", on_delete=models.CASCADE, blank=True,
                              null=True)
     N2ID = models.ForeignKey(N2DeviceTable, to_field='ID', verbose_name="N2ID", on_delete=models.CASCADE, blank=True,
@@ -233,6 +235,8 @@ class BigTestInfoTable(models.Model):
     CO2ID = models.ForeignKey(CO2DeviceTable, to_field='ID', verbose_name="CO2ID", on_delete=models.CASCADE, blank=True,
                               null=True)
     AIRID = models.ForeignKey(AIRDeviceTable, to_field='ID', verbose_name="AIRID", on_delete=models.CASCADE, blank=True,
+                              null=True)
+    wdjID = models.ForeignKey(wdjDeviceTable, to_field='ID', verbose_name="wdjID", on_delete=models.CASCADE, blank=True,
                               null=True)
     ovenID = models.ForeignKey(ovenDeviceTable, to_field='ID', verbose_name="ovenID", on_delete=models.CASCADE,
                                blank=True, null=True)
@@ -259,9 +263,11 @@ class testInfoTable(models.Model):
 
 class cellTestRealDataTable(models.Model):
     # 电池ID
-    cellID = models.ForeignKey(cellDeviceTable, to_field='cellID', verbose_name="cellID", on_delete=models.CASCADE,null=True,blank=True)
-    boxID = models.ForeignKey(boxDeviceTable, to_field='ID', verbose_name="箱号", on_delete=models.CASCADE,null=True,blank=True)
-    chnNum = models.IntegerField(default=0, verbose_name="通道号",null=True,blank=True)
+    cellID = models.ForeignKey(cellDeviceTable, to_field='cellID', verbose_name="cellID", on_delete=models.CASCADE,
+                               null=True, blank=True)
+    boxID = models.ForeignKey(boxDeviceTable, to_field='ID', verbose_name="箱号", on_delete=models.CASCADE, null=True,
+                              blank=True)
+    chnNum = models.IntegerField(default=0, verbose_name="通道号", null=True, blank=True)
     # 测试ID，区别于测试方案ID
     bigTestID = models.ForeignKey(BigTestInfoTable, to_field='id', verbose_name="bigTestID", on_delete=models.CASCADE)
     testID = models.ForeignKey(testInfoTable, to_field='id', verbose_name="testID", on_delete=models.CASCADE,
@@ -269,9 +275,9 @@ class cellTestRealDataTable(models.Model):
     # 测试方案信息
     totalStepN = models.IntegerField(default=0, verbose_name="总工步数", blank=True, null=True)
     currState = models.CharField(choices=(("stop", "停止"), ("pause", "暂停"), ("start", "启动"), ("resume", "继续")),
-                                 max_length=10, verbose_name="当前状态", default="stop",null=True,blank=True)
+                                 max_length=10, verbose_name="当前状态", default="stop", null=True, blank=True)
     nextState = models.CharField(choices=(("stop", "停止"), ("pause", "暂停"), ("start", "启动"), ("resume", "继续")),
-                                 max_length=10, verbose_name="下一步状态", default="stop",null=True,blank=True)
+                                 max_length=10, verbose_name="下一步状态", default="stop", null=True, blank=True)
 
     # 电池运行状态信息
     conState = models.IntegerField(default=0, verbose_name="联机状态", blank=True, null=True)
@@ -352,9 +358,10 @@ class cellTestRealDataTable(models.Model):
 
 class eventTable(models.Model):
     date = models.DateTimeField(auto_now=True, verbose_name="T4数据修改时间")
-    cellID = models.ForeignKey(cellDeviceTable, to_field='cellID', verbose_name="cellID", on_delete=models.DO_NOTHING,null=True,blank=True)
-    boxID = models.IntegerField(default=0, verbose_name="箱号", null=True,blank=True)  #
-    chnNum = models.IntegerField(default=0, verbose_name="通道号" ,null=True,blank=True)
+    cellID = models.ForeignKey(cellDeviceTable, to_field='cellID', verbose_name="cellID", on_delete=models.DO_NOTHING,
+                               null=True, blank=True)
+    boxID = models.IntegerField(default=0, verbose_name="箱号", null=True, blank=True)  #
+    chnNum = models.IntegerField(default=0, verbose_name="通道号", null=True, blank=True)
     testID = models.ForeignKey(testInfoTable, to_field='id', verbose_name="测试ID", on_delete=models.CASCADE)
     planID = models.ForeignKey(cellPlanTable, to_field='id', verbose_name="测试方案ID", on_delete=models.CASCADE)
     stepNum = models.IntegerField(default=0, verbose_name="工步号", blank=True)

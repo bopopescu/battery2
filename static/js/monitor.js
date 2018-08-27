@@ -30,7 +30,8 @@ var T = {
 var refresh = 3000;
 
 function set_interval() {
-    refresh = (isNaN(Number.parseInt($("#refresh-int").val())) && (Number.parseInt($("#refresh-int").val()) <= 3000) ? 3000 : Number.parseInt($("#refresh-int").val()));
+    refresh = (isNaN(Number.parseInt($("#refresh-int").val())) || (Number.parseInt($("#refresh-int").val()) <= 3000) ? 3000 : Number.parseInt($("#refresh-int").val()));
+    console.log(refresh);
     clearInterval(intID1);
     clearInterval(intID2);
     clearInterval(intID3);
@@ -51,6 +52,9 @@ function stop_refresh() {
 
 $(document).ready(function () {
         get_boxes();
+        get_oven_status();
+        get_cells_info();
+        get_tests_info();
         var box_num = $('#box_num_selected option:selected').val();//选中的值
         var channel_num = $('#channel_num_selected option:selected').val();//选中的值
         if (box_num != undefined && channel_num != undefined) {
@@ -91,7 +95,7 @@ function get_boxes() {
             option.innerText = box[i].id;
             b_num.appendChild(option);
         }
-        $("#channel_num_selected").empty();
+    $("#channel_num_selected").empty();
     if (box.length != 0)
         get_channels(box[0].id);
 }
@@ -145,6 +149,8 @@ function parse_scheme_data(data) {
     var th = document.getElementById("table_head");
 
     create_table_body(tb, steps.length, $("#table_head").children().children().length);
+    if (steps.length == 0)
+        return false;
     insert_into_table(tb, 1, 1, sID);
     var col_name = Object.keys(steps[0]);
     console.log(col_name);
@@ -561,6 +567,7 @@ function get_realtime_data() {
 function show_brief_info() {
     var box_num = $('#box_num_selected option:selected').val();//选中的值
     var channel_num = $('#channel_num_selected option:selected').val();//选中的值
+
     if (box_num != undefined && channel_num != undefined)
         $.ajax({
             url: "testline_info/" + box_num + "/" + channel_num + "/",
@@ -614,3 +621,94 @@ function get_status_success(data) {
 }
 
 
+function get_oven_status() {
+    $.ajax({
+        url: "oven_status/",
+        type: "get",
+        dataType: 'json',
+        async: false, //同步执行
+        success: function (data) {
+            data = data.oven;
+            var oven_num = data.length;
+            if (oven_num != 0) {
+                var tb = document.getElementById("oven_status_tablebody");
+                create_table_body(tb, oven_num, 5);
+                for (var i = 1; i <= oven_num; i++) {
+                    insert_into_table(tb, i, 1, data[i - 1].ID);
+                    insert_into_table(tb, i, 2, data[i - 1].curr);
+                    insert_into_table(tb, i, 3, data[i - 1].next);
+                    insert_into_table(tb, i, 4, data[i - 1].T);
+                    insert_into_table(tb, i, 5, data[i - 1].PlanID);
+                }
+
+            }
+        }
+    })
+}
+
+function get_cells_info() {
+    $.ajax({
+        url: "cells_info/",
+        type: "get",
+        dataType: 'json',
+        async: false, //同步执行
+        success: function (data) {
+            data = data.cells;
+            var cell_num = data.length;
+            if (cell_num != 0) {
+                var tb = document.getElementById("device_relation_tablebody");
+                create_table_body(tb, cell_num, 11);
+                for (var i = 1; i <= cell_num; i++) {
+                    insert_into_table(tb, i, 1, data[i - 1].cellID);
+                    insert_into_table(tb, i, 2, data[i - 1].boxID);
+                    insert_into_table(tb, i, 3, data[i - 1].chnNum);
+                    insert_into_table(tb, i, 4, data[i - 1].ovenID);
+                    insert_into_table(tb, i, 5, data[i - 1].H2ID);
+                    insert_into_table(tb, i, 6, data[i - 1].N2ID);
+                    insert_into_table(tb, i, 7, data[i - 1].H2OID);
+                    insert_into_table(tb, i, 8, data[i - 1].CO2ID);
+                    insert_into_table(tb, i, 9, data[i - 1].CH4ID);
+                    insert_into_table(tb, i, 10, data[i - 1].AIRID);
+                    insert_into_table(tb, i, 11, data[i - 1].wdjID);
+                }
+
+            }
+        }
+    })
+}
+
+function get_tests_info() {
+    $.ajax({
+        url: "tests_info/",
+        type: "get",
+        dataType: 'json',
+        async: false, //同步执行
+        success: function (data) {
+            data = data.tests;
+            var test_num = data.length;
+            if (test_num != 0) {
+                var tb = document.getElementById("tests_info_tablebody");
+                create_table_body(tb, test_num, 16);
+                for (var i = 1; i <= test_num; i++) {
+                    insert_into_table(tb, i, 1, data[i - 1].BigTestID);
+                    insert_into_table(tb, i, 2, data[i - 1].TestID);
+                    insert_into_table(tb, i, 3, data[i - 1].CellID);
+                    insert_into_table(tb, i, 4, data[i - 1].BoxID);
+                    insert_into_table(tb, i, 5, data[i - 1].ChnID);
+                    insert_into_table(tb, i, 6, data[i - 1].PlanID);
+                    insert_into_table(tb, i, 7, data[i - 1].OvenID);
+                    insert_into_table(tb, i, 8, data[i - 1].OvenPlanID);
+                    insert_into_table(tb, i, 9, data[i - 1].H2ID);
+                    insert_into_table(tb, i, 10, data[i - 1].N2ID);
+                    insert_into_table(tb, i, 11, data[i - 1].H2OID);
+                    insert_into_table(tb, i, 12, data[i - 1].CO2ID);
+                    insert_into_table(tb, i, 13, data[i - 1].CH4ID);
+                    insert_into_table(tb, i, 14, data[i - 1].AIRID);
+                    insert_into_table(tb, i, 15, data[i - 1].StartTime);
+                    insert_into_table(tb, i, 16, data[i - 1].EndTime);
+                }
+
+            }
+        }
+    })
+}
