@@ -9,6 +9,8 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
+    <SUITE FILE_PATH="coverage/battery1$socketClient.coverage" NAME="socketClient Coverage Results" MODIFIED="1535508587997" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/mysocket" />
+    <SUITE FILE_PATH="coverage/battery1$dbtest.coverage" NAME="dbtest Coverage Results" MODIFIED="1535433509465" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/mysocket" />
     <SUITE FILE_PATH="coverage/battery1$mfcControl.coverage" NAME="mfcControl Coverage Results" MODIFIED="1534829340763" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/MFC" />
     <SUITE FILE_PATH="coverage/battery1$ovenControl.coverage" NAME="ovenControl Coverage Results" MODIFIED="1535172513859" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Oven" />
   </component>
@@ -33,19 +35,19 @@
     <session id="1541229327">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="23" />
+          <entry key="project.closed" value="27" />
           <entry key="project.open.time.1" value="1" />
-          <entry key="project.open.time.14" value="1" />
+          <entry key="project.open.time.14" value="4" />
           <entry key="project.open.time.15" value="5" />
           <entry key="project.open.time.16" value="6" />
           <entry key="project.open.time.17" value="2" />
           <entry key="project.open.time.18" value="3" />
           <entry key="project.open.time.19" value="1" />
-          <entry key="project.open.time.20" value="3" />
+          <entry key="project.open.time.20" value="4" />
           <entry key="project.open.time.21" value="1" />
           <entry key="project.open.time.23" value="1" />
           <entry key="project.open.time.24" value="1" />
-          <entry key="project.opened" value="25" />
+          <entry key="project.opened" value="29" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -53,8 +55,8 @@
           <entry key="html" value="29" />
           <entry key="js" value="20" />
           <entry key="json" value="4" />
-          <entry key="py" value="105" />
-          <entry key="pyi" value="2" />
+          <entry key="py" value="109" />
+          <entry key="pyi" value="3" />
           <entry key="rnc" value="1" />
         </counts>
       </usages-collector>
@@ -63,8 +65,8 @@
           <entry key="HTML" value="29" />
           <entry key="JSON" value="4" />
           <entry key="JavaScript" value="20" />
-          <entry key="Python" value="105" />
-          <entry key="PythonStub" value="2" />
+          <entry key="Python" value="109" />
+          <entry key="PythonStub" value="3" />
           <entry key="RNG Compact" value="1" />
         </counts>
       </usages-collector>
@@ -72,71 +74,71 @@
         <counts>
           <entry key="html" value="5366" />
           <entry key="js" value="12412" />
-          <entry key="json" value="435" />
-          <entry key="py" value="23034" />
+          <entry key="json" value="449" />
+          <entry key="py" value="28313" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="HTML" value="5366" />
-          <entry key="JSON" value="435" />
+          <entry key="JSON" value="449" />
           <entry key="JavaScript" value="12412" />
-          <entry key="Python" value="23034" />
+          <entry key="Python" value="28313" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/apps/backend_db_interface.py">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/mysocket/dbClass.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-233">
-              <caret line="630" column="35" lean-forward="true" selection-start-line="630" selection-start-column="35" selection-end-line="630" selection-end-column="35" />
+            <state relative-caret-position="333">
+              <caret line="268" column="43" selection-start-line="268" selection-start-column="43" selection-end-line="268" selection-end-column="43" />
               <folding>
-                <element signature="e#0#21#0" expanded="true" />
-                <element signature="e#192#1201#0" />
-                <element signature="e#1241#1811#0" />
-                <element signature="e#1861#2444#0" />
-                <element signature="e#2762#5050#0" />
-                <element signature="e#3006#3882#0" />
-                <element signature="e#1250#2064#0" />
-                <element signature="e#2108#3066#0" />
-                <element signature="e#3117#4352#0" />
-                <element signature="e#4408#5316#0" />
-                <element signature="e#6333#10242#0" />
-                <element signature="e#10311#14096#0" />
-                <element signature="e#14153#15302#0" />
-                <marker date="1535355631925" expanded="true" signature="2830:5194" ph="..." />
-                <marker date="1535355631925" expanded="true" signature="7102:9366" ph="..." />
-                <marker date="1535355631925" expanded="true" signature="10246:10250" ph="..." />
-                <marker date="1535355631925" expanded="true" signature="16158:16159" ph="..." />
-                <marker date="1535355631925" expanded="true" signature="18138:19295" ph="..." />
+                <element signature="e#139#153#0" expanded="true" />
+                <marker date="1535508584705" expanded="true" signature="4266:4931" ph="..." />
+                <marker date="1535508584705" expanded="true" signature="6024:6033" ph="..." />
+                <marker date="1535508584705" expanded="true" signature="7776:8312" ph="..." />
+                <marker date="1535508584705" expanded="true" signature="10829:11575" ph="..." />
+                <marker date="1535508584705" expanded="true" signature="11281:11575" ph="..." />
+                <marker date="1535508584705" expanded="true" signature="12564:14761" ph="..." />
+                <marker date="1535508584705" expanded="true" signature="12621:14761" ph="..." />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/mysocket/dbClass.py">
+        <entry file="file://$PROJECT_DIR$/mysocket/socketClient.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="447">
-              <caret line="204" lean-forward="true" selection-start-line="204" selection-end-line="204" />
+            <state relative-caret-position="292">
+              <caret line="586" column="46" selection-start-line="586" selection-start-column="46" selection-end-line="586" selection-end-column="46" />
               <folding>
-                <element signature="e#139#153#0" expanded="true" />
-                <element signature="e#6214#6819#0" />
-                <element signature="e#6833#7024#0" />
-                <element signature="e#7063#7282#0" />
-                <element signature="e#7321#7797#0" />
-                <element signature="e#7578#7709#0" />
-                <element signature="e#8069#8518#0" />
-                <element signature="e#8563#8826#0" />
-                <element signature="e#9139#9588#0" />
-                <element signature="e#9456#10336#0" />
-                <marker date="1535356132323" expanded="true" signature="4282:4839" ph="..." />
-                <marker date="1535356132323" expanded="true" signature="6556:6561" ph="..." />
-                <marker date="1535356132323" expanded="true" signature="8438:8444" ph="..." />
+                <element signature="e#20949#23382#0" />
+                <element signature="e#23458#23786#0" />
+                <element signature="e#23869#26861#0" />
+                <marker date="1535473590260" expanded="true" signature="20196:20201" ph="..." />
+                <marker date="1535473590260" expanded="true" signature="37671:38007" ph="..." />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/mysocket/ovenControl.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="2625">
+              <caret line="105" column="23" selection-start-line="79" selection-start-column="8" selection-end-line="105" selection-end-column="23" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/mysocket/dbtest.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="900">
+              <caret line="36" column="27" selection-start-line="36" selection-start-column="27" selection-end-line="36" selection-end-column="27" />
             </state>
           </provider>
         </entry>
@@ -144,27 +146,10 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/apps/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="500">
-              <caret line="238" column="78" selection-start-line="238" selection-start-column="78" selection-end-line="238" selection-end-column="78" />
+            <state relative-caret-position="6550">
+              <caret line="262" selection-start-line="262" selection-end-line="262" />
               <folding>
-                <marker date="1535354987321" expanded="true" signature="5532:5541" ph="..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/mysocket/socketClient.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="456">
-              <caret line="454" column="24" selection-start-line="454" selection-start-column="24" selection-end-line="454" selection-end-column="24" />
-              <folding>
-                <element signature="e#44#71#0" expanded="true" />
-                <element signature="e#241#781#0" />
-                <element signature="e#843#959#0" />
-                <element signature="e#1002#13132#0" />
-                <element signature="e#13178#14007#0" />
-                <element signature="e#15222#23232#0" />
+                <marker date="1535461017855" expanded="true" signature="5532:5541" ph="..." />
               </folding>
             </state>
           </provider>
@@ -173,8 +158,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/mysocket/db_config.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="400">
-              <caret line="16" column="27" selection-start-line="16" selection-start-column="27" selection-end-line="16" selection-end-column="27" />
+            <state relative-caret-position="250">
+              <caret line="10" column="42" selection-start-line="10" selection-start-column="42" selection-end-line="10" selection-end-column="42" />
             </state>
           </provider>
         </entry>
@@ -183,7 +168,7 @@
         <entry file="file://$PROJECT_DIR$/mysocket/socketClass.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="50">
-              <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
+              <caret line="10" selection-start-line="10" selection-end-line="10" />
             </state>
           </provider>
         </entry>
@@ -200,7 +185,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/apps/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="569">
+            <state relative-caret-position="6525">
               <caret line="276" column="9" selection-start-line="276" selection-start-column="9" selection-end-line="276" selection-end-column="9" />
               <folding>
                 <element signature="e#0#35#0" expanded="true" />
@@ -218,8 +203,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="JavaScript File" />
-        <option value="Python Script" />
         <option value="HTML File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -238,10 +223,19 @@
       <find>U_I_t_chart</find>
       <find>c.m</find>
       <find>join</find>
+      <find>diction</find>
+      <find>DataDict</find>
+      <find>没有该参数值</find>
+      <find>没</find>
+      <find>readRealData</find>
+      <find>readR</find>
+      <find>oven</find>
+      <find>failed</find>
     </findStrings>
     <replaceStrings>
       <replace>hours=TZ</replace>
       <replace>bt.</replace>
+      <replace>wdjDataDict</replace>
     </replaceStrings>
     <dirStrings>
       <dir>D:\battery1\mysocket\server</dir>
@@ -276,11 +270,13 @@
         <option value="$PROJECT_DIR$/static/js/monitor.js" />
         <option value="$PROJECT_DIR$/battery/urls.py" />
         <option value="$PROJECT_DIR$/apps/views.py" />
-        <option value="$PROJECT_DIR$/mysocket/db_config.json" />
-        <option value="$PROJECT_DIR$/apps/models.py" />
         <option value="$PROJECT_DIR$/apps/backend_db_interface.py" />
-        <option value="$PROJECT_DIR$/mysocket/dbClass.py" />
+        <option value="$PROJECT_DIR$/mysocket/dbtest.py" />
+        <option value="$PROJECT_DIR$/mysocket/ovenControl.py" />
+        <option value="$PROJECT_DIR$/apps/models.py" />
+        <option value="$PROJECT_DIR$/mysocket/db_config.json" />
         <option value="$PROJECT_DIR$/mysocket/socketClient.py" />
+        <option value="$PROJECT_DIR$/mysocket/dbClass.py" />
       </list>
     </option>
   </component>
@@ -290,10 +286,11 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="-7" />
-    <option name="width" value="1289" />
-    <option name="height" value="1047" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1936" />
+    <option name="height" value="1056" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -301,7 +298,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -332,12 +328,6 @@
             <path>
               <item name="battery1" type="b2602c69:ProjectViewProjectNode" />
               <item name="battery1" type="462c0819:PsiDirectoryNode" />
-              <item name="mysocket" type="462c0819:PsiDirectoryNode" />
-              <item name="server" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="battery1" type="b2602c69:ProjectViewProjectNode" />
-              <item name="battery1" type="462c0819:PsiDirectoryNode" />
               <item name="Oven" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -354,6 +344,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -366,6 +357,7 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\battery1\mysocket" />
       <recent name="D:\battery1\mysocket\server" />
     </key>
   </component>
@@ -381,7 +373,29 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.ovenControl">
+  <component name="RunManager" selected="Python.socketClient">
+    <configuration name="dbtest" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="battery1" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/mysocket" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/mysocket/dbtest.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="mfcControl" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="battery1" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -426,6 +440,28 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="socketClient" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="battery1" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/mysocket" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/mysocket/socketClient.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="battery1" type="Python.DjangoServer" factoryName="Django server">
       <module name="battery1" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -453,9 +489,13 @@
       <item itemvalue="Django server.battery1" />
       <item itemvalue="Python.mfcControl" />
       <item itemvalue="Python.ovenControl" />
+      <item itemvalue="Python.dbtest" />
+      <item itemvalue="Python.socketClient" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.socketClient" />
+        <item itemvalue="Python.dbtest" />
         <item itemvalue="Python.ovenControl" />
         <item itemvalue="Python.mfcControl" />
       </list>
@@ -484,15 +524,15 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="0" width="1289" height="1047" extended-state="0" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2278275" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.15724947" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.80490404" weight="0.13542795" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.8022388" visible="true" weight="0.4284165" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3997833" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -500,7 +540,7 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.19509594" side_tool="true" visible="true" weight="0.13910186" />
+      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.1977612" side_tool="true" visible="true" weight="0.4284165" />
       <window_info anchor="bottom" id="Terminal" order="11" weight="0.32936078" />
       <window_info anchor="bottom" id="Python Console" order="12" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -540,22 +580,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/mysocket/battery.json">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/home - 副本.html">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/js/eranking.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1275" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/js/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-975" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/static/js/common/bootstrap-table.min.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
@@ -694,13 +718,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Oven/ovenControl.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="149" column="8" lean-forward="true" selection-start-line="149" selection-start-column="8" selection-end-line="150" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/apps/admin.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="545">
@@ -747,18 +764,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="294">
           <caret line="690" column="50" selection-start-line="690" selection-start-column="50" selection-end-line="690" selection-end-column="50" />
-          <folding>
-            <element signature="n#!!block;n#show_channel#0" />
-            <element signature="n#!!block;n#get_channels#0" />
-            <element signature="n#!!block;n#create_table_body#0" />
-            <element signature="n#!!block;n#insert_into_table#0" />
-            <element signature="n#!!block;n#show_chart#0" />
-            <element signature="n#!!block;n#get_realtime_data#0" />
-            <element signature="n#!!block;n#get_info_success#0" />
-            <element signature="n#!!block;n#get_status_success#0" />
-            <element signature="n#!!block;n#f#0" />
-            <element signature="n#!!block;n#f#0" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -766,22 +771,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="94">
           <caret line="31" column="20" selection-start-line="31" selection-start-column="20" selection-end-line="31" selection-end-column="20" />
-          <folding>
-            <element signature="e#631#663#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/apps/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="569">
-          <caret line="276" column="9" selection-start-line="276" selection-start-column="9" selection-end-line="276" selection-end-column="9" />
-          <folding>
-            <element signature="e#0#35#0" expanded="true" />
-            <marker date="1535336532830" expanded="true" signature="801:928" ph="..." />
-            <marker date="1535336532830" expanded="true" signature="1746:1815" ph="..." />
-            <marker date="1535336532830" expanded="true" signature="7424:7635" ph="..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -812,13 +801,6 @@
     <entry file="file://$PROJECT_DIR$/mysocket/socketClient - 副本.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/mysocket/run.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="16" column="13" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/battery/__init__.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -836,90 +818,119 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mysocket/socketClass.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="50">
-          <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mysocket/db_config.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="400">
-          <caret line="16" column="27" selection-start-line="16" selection-start-column="27" selection-end-line="16" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/apps/backend_db_interface.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-233">
-          <caret line="630" column="35" lean-forward="true" selection-start-line="630" selection-start-column="35" selection-end-line="630" selection-end-column="35" />
-          <folding>
-            <element signature="e#0#21#0" expanded="true" />
-            <element signature="e#192#1201#0" />
-            <element signature="e#1241#1811#0" />
-            <element signature="e#1861#2444#0" />
-            <element signature="e#2762#5050#0" />
-            <element signature="e#3006#3882#0" />
-            <element signature="e#1250#2064#0" />
-            <element signature="e#2108#3066#0" />
-            <element signature="e#3117#4352#0" />
-            <element signature="e#4408#5316#0" />
-            <element signature="e#6333#10242#0" />
-            <element signature="e#10311#14096#0" />
-            <element signature="e#14153#15302#0" />
-            <marker date="1535355631925" expanded="true" signature="2830:5194" ph="..." />
-            <marker date="1535355631925" expanded="true" signature="7102:9366" ph="..." />
-            <marker date="1535355631925" expanded="true" signature="10246:10250" ph="..." />
-            <marker date="1535355631925" expanded="true" signature="16158:16159" ph="..." />
-            <marker date="1535355631925" expanded="true" signature="18138:19295" ph="..." />
-          </folding>
+        <state relative-caret-position="15625">
+          <caret line="630" column="35" selection-start-line="630" selection-start-column="35" selection-end-line="630" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Oven/ovenControl.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3446">
+          <caret line="149" column="8" selection-start-line="149" selection-start-column="8" selection-end-line="150" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/Python/Python36/Lib/site-packages/pymysql/connections.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1164">
+          <caret line="194" column="41" lean-forward="true" selection-start-line="194" selection-start-column="41" selection-end-line="194" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/2and3/socket.pyi">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="231">
+          <caret line="549" column="47" lean-forward="true" selection-start-line="549" selection-start-column="47" selection-end-line="549" selection-end-column="47" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mysocket/ovenControl.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2625">
+          <caret line="105" column="23" selection-start-line="79" selection-start-column="8" selection-end-line="105" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mysocket/dbtest.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="900">
+          <caret line="36" column="27" selection-start-line="36" selection-start-column="27" selection-end-line="36" selection-end-column="27" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/apps/models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="500">
-          <caret line="238" column="78" selection-start-line="238" selection-start-column="78" selection-end-line="238" selection-end-column="78" />
+        <state relative-caret-position="6550">
+          <caret line="262" selection-start-line="262" selection-end-line="262" />
           <folding>
-            <marker date="1535354987321" expanded="true" signature="5532:5541" ph="..." />
+            <marker date="1535461017855" expanded="true" signature="5532:5541" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mysocket/dbClass.py">
+    <entry file="file://$PROJECT_DIR$/mysocket/db_config.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="447">
-          <caret line="204" lean-forward="true" selection-start-line="204" selection-end-line="204" />
+        <state relative-caret-position="250">
+          <caret line="10" column="42" selection-start-line="10" selection-start-column="42" selection-end-line="10" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mysocket/socketClass.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="50">
+          <caret line="10" selection-start-line="10" selection-end-line="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mysocket/run.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="16" column="13" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/apps/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="6525">
+          <caret line="276" column="9" selection-start-line="276" selection-start-column="9" selection-end-line="276" selection-end-column="9" />
           <folding>
-            <element signature="e#139#153#0" expanded="true" />
-            <element signature="e#6214#6819#0" />
-            <element signature="e#6833#7024#0" />
-            <element signature="e#7063#7282#0" />
-            <element signature="e#7321#7797#0" />
-            <element signature="e#7578#7709#0" />
-            <element signature="e#8069#8518#0" />
-            <element signature="e#8563#8826#0" />
-            <element signature="e#9139#9588#0" />
-            <element signature="e#9456#10336#0" />
-            <marker date="1535356132323" expanded="true" signature="4282:4839" ph="..." />
-            <marker date="1535356132323" expanded="true" signature="6556:6561" ph="..." />
-            <marker date="1535356132323" expanded="true" signature="8438:8444" ph="..." />
+            <element signature="e#0#35#0" expanded="true" />
+            <marker date="1535336532830" expanded="true" signature="801:928" ph="..." />
+            <marker date="1535336532830" expanded="true" signature="1746:1815" ph="..." />
+            <marker date="1535336532830" expanded="true" signature="7424:7635" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/mysocket/socketClient.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="456">
-          <caret line="454" column="24" selection-start-line="454" selection-start-column="24" selection-end-line="454" selection-end-column="24" />
+        <state relative-caret-position="292">
+          <caret line="586" column="46" selection-start-line="586" selection-start-column="46" selection-end-line="586" selection-end-column="46" />
           <folding>
-            <element signature="e#44#71#0" expanded="true" />
-            <element signature="e#241#781#0" />
-            <element signature="e#843#959#0" />
-            <element signature="e#1002#13132#0" />
-            <element signature="e#13178#14007#0" />
-            <element signature="e#15222#23232#0" />
+            <element signature="e#20949#23382#0" />
+            <element signature="e#23458#23786#0" />
+            <element signature="e#23869#26861#0" />
+            <marker date="1535473590260" expanded="true" signature="20196:20201" ph="..." />
+            <marker date="1535473590260" expanded="true" signature="37671:38007" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mysocket/dbClass.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="333">
+          <caret line="268" column="43" selection-start-line="268" selection-start-column="43" selection-end-line="268" selection-end-column="43" />
+          <folding>
+            <element signature="e#139#153#0" expanded="true" />
+            <marker date="1535508584705" expanded="true" signature="4266:4931" ph="..." />
+            <marker date="1535508584705" expanded="true" signature="6024:6033" ph="..." />
+            <marker date="1535508584705" expanded="true" signature="7776:8312" ph="..." />
+            <marker date="1535508584705" expanded="true" signature="10829:11575" ph="..." />
+            <marker date="1535508584705" expanded="true" signature="11281:11575" ph="..." />
+            <marker date="1535508584705" expanded="true" signature="12564:14761" ph="..." />
+            <marker date="1535508584705" expanded="true" signature="12621:14761" ph="..." />
           </folding>
         </state>
       </provider>

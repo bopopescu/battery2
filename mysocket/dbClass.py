@@ -7,7 +7,6 @@
 import pymysql
 import json
 from datetime import datetime
-from apps.models import *
 
 
 class dbClass(object):
@@ -45,7 +44,7 @@ class dbClass(object):
         self.testInfoTable = configJson["testInfoTable"]
         self.cellTestRealDataTable = configJson["cellTestRealDataTable"]
         self.eventTable = configJson["eventTable"]
-        self.cellTestHistoryDataTable = configJson["cellHistoryDataTable"]
+        self.cellTestHistoryDataTable = configJson["cellTestHistoryDataTable"]
 
     def updateCellDeviceTable(self, boxid, chnNum, datadict):
         dbconnection = pymysql.connect(host=self.host, port=self.port, user=self.user, passwd=self.passwd,
@@ -112,71 +111,169 @@ class dbClass(object):
         dbconnection.commit()
         dbconnection.close()
 
-    def executeGetSQL(self, sql):
+    def executeGetSQL(self, sql, keys):
         dbconnection = pymysql.connect(host=self.host, port=self.port, user=self.user, passwd=self.passwd,
                                        db=self.db, charset="utf8")
         cursor = dbconnection.cursor()
-        result = None
+        r_list = []
         try:
             cursor.execute(sql)
             result = cursor.fetchall()
-            # print (type(result))
-            # print(result)
+            for i in result:
+                data = {}
+                for j in range(0, len(keys)):
+                    data[keys[j]] = i[j]
+                r_list.append(data)
         except Exception as e:
             print(e)
             dbconnection.rollback()
         dbconnection.commit()
         dbconnection.close()
-        return result
-
-    def getBoxComInfo(self):
-        # sql = 'SELECT boxID, boxIP, boxPort, cellID_id FROM ' + self.boxDeviceTable
-        sql = 'SELECT * FROM ' + self.boxDeviceTable
-        result = self.executeGetSQL(sql)
-        return result
-
-    def getGasComInfo(self):
-        # sql = 'SELECT qCoef, qIP, qPort, cellID_id, type_id FROM ' + self.gasDeviceTable
-        sql = 'SELECT * FROM ' + self.gasDeviceTable
-        # print(sql)
-        result = self.executeGetSQL(sql)
-        return result
-
-    def getTemComInfo(self):
-        # sql = 'SELECT qCoef, qIP, qPort, cellID_id, type_id FROM ' + self.temDeviceTable
-        sql = 'SELECT * FROM ' + self.temDeviceTable
-        # print(sql)
-        result = self.executeGetSQL(sql)
-        return result
-
-    def getCellInfo(self):
-        sql = 'SELECT cellID, boxID_id, chnNum FROM ' + self.cellDeviceTable
-        result = self.executeGetSQL(sql)
-        return result
+        return r_list
 
     def getCellsUnderHandle(self):
-        sql = 'SELECT cellID_id, boxID, chnNum, planID_id, testID_id, currState, nextState FROM ' + self.cellTestRealDataTable + ' WHERE (currState!=nextState) OR ((currState=\'start\') AND (nextState=\'start\' )) '
-        result = self.executeGetSQL(sql)
+        print("get cell under handle")
+        keys = ["cellID_id", "boxID_id", "testID_id", "bigTestID_id", "chnNum", "currState", "nextState"]
+        keystr = ",".join(keys)
+        sql = 'SELECT ' + keystr + ' FROM ' + self.cellTestRealDataTable + ' WHERE (currState!=nextState)'
+        result = self.executeGetSQL(sql, keys)
+        print("cell under handle:" + str(result))
         return result
 
-    def getCellsTestPlan(self):
-        sql = 'SELECT * FROM ' + self.cellPlanTable + ' WHERE planID_id in (SELECT planID_id FROM ' + self.cellRealDataTable + ' WHERE (currState!=nextState) OR ((currState=\'start\') AND (nextState=\'start\' ))  OR (currOvenState!=nextOvenState) OR (H2curr!=H2next) OR (N2curr!=N2next) OR (CO2curr!=CO2next) OR (H2Ocurr!=H2Onext) OR (CH4curr!=CH4next) OR (AIRcurr!=AIRnext) ORDER BY step ASC)'
-        result = self.executeGetSQL(sql)
+    def getCellsTestPlan(self, cell):
+        keys = ["planID_id", ]
+        sql = 'SELECT planID_id FROM ' + self.testInfoTable + ' WHERE id=' + cell["testID_id"]
+        result = self.executeGetSQL(sql, keys)
+        keys = ["id", "planID_id", "step", "mode", "i", "u", "r", "p", "n", "nStart", "nStop", "nTarget", "tTH", "iTH",
+                "uTH", "qTH"]
+        keystr = ",".join(keys)
+        sql = 'SELECT ' + keystr + ' FROM ' + self.cellPlanDetailTable + ' WHERE planID_id=' + result[0][
+            "planID_id"] + ' ORDER BY step'
+        result = self.executeGetSQL(sql, keys)
         return result
 
-    def getCellsComponetCOM(self):
-        sql = 'SELECT * FROM ' + self.cellDeviceTable + ' WHERE cellID in (SELECT cellID FROM ' + self.cellRealDataTable + ' WHERE (currState!=nextState) OR ((currState=\'start\') AND (nextState=\'start\' ))'
-        result = self.executeGetSQL(sql)
-        return result
+    def getCellsComponetCOM(self, cell):
+        keys = ["cellID", "chnNum", "boxID_id", "mAIRID_id", "mH2ID_id", "mCH4ID_id", "mN2ID_id", "mAIRID_id",
+                "mH2OID_id", "mT1ID_id", "mT0ID_id"]
+        keystr = ",".join(keys)
+        sql = "SELECT " + keystr + " FROM " + self.cellDeviceTable + " WHERE cellID=" + str(cell["cellID_id"])
+        cellDevice = self.executeGetSQL(sql, keys)[0]
+
+        keys = ["ID", "IP", "PortNum", "Addr", "totalChnNum"]
+        keystr = ",".join(keys)
+        sql = "SELECT " + keystr + " FROM " + self.boxDeviceTable + " WHERE ID=" + str(cellDevice["boxID_id"])
+        data = self.executeGetSQL(sql, keys)
+        data[0]["chnNum"] = cellDevice["chnNum"]
+        data[0]["cellID"] = cellDevice["cellID"]
+        return data
+
+    def getGasCOM(self, type, llj):
+        keys = ["ID", "IP", "PortNum", "Addr"]
+        keystr = ",".join(keys)
+        if type == "H2":
+            sql = "SELECT " + keystr + " FROM " + self.H2DeviceTable + " WHERE ID=" + str(llj["H2ID_id"])
+        elif type == "N2":
+            sql = "SELECT " + keystr + " FROM " + self.N2DeviceTable + " WHERE ID=" + str(llj["N2ID_id"])
+        elif type == "CH4":
+            sql = "SELECT " + keystr + " FROM " + self.CH4DeviceTable + " WHERE ID=" + str(llj["CH4ID_id"])
+        elif type == "CO2":
+            sql = "SELECT " + keystr + " FROM " + self.CO2DeviceTable + " WHERE ID=" + str(llj["CO2ID_id"])
+        elif type == "AIR":
+            sql = "SELECT " + keystr + " FROM " + self.AIRDeviceTable + " WHERE ID=" + str(llj["AIRID_id"])
+        elif type == "H2O":
+            sql = "SELECT " + keystr + " FROM " + self.H2ODeviceTable + " WHERE ID=" + str(llj["H2OID_id"])
+        data = self.executeGetSQL(sql, keys)
+        return data
+
+    def getOvenCOM(self, oven):
+        keys = ["ID", "IP", "PortNum", "Addr"]
+        keystr = ",".join(keys)
+        sql = "SELECT " + keystr + " FROM " + self.ovenDeviceTable + " WHERE ID=" + str(oven["ovenID_id"])
+        data = self.executeGetSQL(sql, keys)
+        return data
+
+    def getWdjCOM(self, wdj):
+        keys = ["ID", "IP", "PortNum", "Addr"]
+        keystr = ",".join(keys)
+        sql = "SELECT " + keystr + " FROM " + self.wdjDeviceTable + " WHERE ID=" + str(wdj["wdjID_id"])
+        data = self.executeGetSQL(sql, keys)
+        return data
 
     def getOvenUnderHandle(self):
-        sql = 'SELECT ID, currState, nextState, IP, PortNum, Addr, ovenPlanID_id FROM ' + self.ovenDeviceTable + ' WHERE (currState!=nextState)'
-        result = self.executeGetSQL(sql)
+        print("get oven under handle")
+        keys = ["ID", "currState", "nextState", "IP", "PortNum", "Addr", "ovenPlanID_id"]
+        keystr = ",".join(keys)
+        sql = 'SELECT ' + keystr + ' FROM ' + self.ovenDeviceTable + ' WHERE (currState!=nextState)'
+        result = self.executeGetSQL(sql, keys)
+        print("oven under handle:"+str(result))
         return result
 
-    def getOvenTestPlan(self):
-        sql = 'SELECT * FROM' + self.ovenDeviceTable + 'WHERE planID_id in (SELECT planID_id FROM ' + self.cellRealDataTable + ' WHERE (currState != nextState) OR((currState=\'start\') AND (nextState=\'start\' )) ORDER BY step ASC)'
-        result = self.executeGetSQL(sql)
+    def getLljUnderHandle(self):
+        print("get MFC under handle")
+        keys = ["ID", "currState", "nextState", "IP", "PortNum", "Addr"]
+        keystr = ",".join(keys)
+        data = []
+
+        sql = 'SELECT ' + keystr + ' FROM ' + self.N2DeviceTable + ' WHERE (currState!=nextState)'
+        result = self.executeGetSQL(sql, keys)
+        for i in result:
+            i["type"] = "N2"
+        data = data + result
+
+        sql = 'SELECT ' + keystr + ' FROM ' + self.H2DeviceTable + ' WHERE (currState!=nextState)'
+        result = self.executeGetSQL(sql, keys)
+        for i in result:
+            i["type"] = "H2"
+        data = data + result
+
+        sql = 'SELECT ' + keystr + ' FROM ' + self.H2ODeviceTable + ' WHERE (currState!=nextState)'
+        result = result + self.executeGetSQL(sql, keys)
+        for i in result:
+            i["type"] = "H2O"
+        data = data + result
+
+        sql = 'SELECT ' + keystr + ' FROM ' + self.CO2DeviceTable + ' WHERE (currState!=nextState)'
+        result = result + self.executeGetSQL(sql, keys)
+        for i in result:
+            i["type"] = "CO2"
+        data = data + result
+
+        sql = 'SELECT ' + keystr + ' FROM ' + self.CH4DeviceTable + ' WHERE (currState!=nextState)'
+        result = result + self.executeGetSQL(sql, keys)
+        for i in result:
+            i["type"] = "CH4"
+        data = data + result
+
+        sql = 'SELECT ' + keystr + ' FROM ' + self.AIRDeviceTable + ' WHERE (currState!=nextState)'
+        result = result + self.executeGetSQL(sql, keys)
+        for i in result:
+            i["type"] = "AIR"
+        data = data + result
+        print("MFC under handle:" + str(result))
+        return result
+
+    def getOvenTestPlan(self, oven):
+        keys = ["id", "step", "T", "time", "ovenPlanID_id"]
+        keystr = ",".join(keys)
+        sql = 'SELECT ' + keystr + ' FROM ' + self.ovenPlanDetailTable + ' WHERE ovenPlanID_id=' + str(oven["ovenPlanID_id"]) + ' ORDER BY step '
+        result = self.executeGetSQL(sql, keys)
+        return result
+
+    def getUncompleteBigTest(self):
+        print("get uncomplete test")
+        keys = ["id", "chnNum", "AIRID_id", "CH4ID_id", "CO2ID_id", "H2ID_id", "H2OID_id", "N2ID_id", "boxID_id",
+                "cellID_id", "ovenID_id", "wdjID_id"]
+        keystr = ",".join(keys)
+        sql = 'SELECT ' + keystr + ' FROM ' + self.BigTestInfoTable + ' WHERE completeFlag=0 '
+        result = self.executeGetSQL(sql, keys)
+        print("uncomplete test:"+str(result))
+        return result
+
+    def getTestIDfromCell(self, cellid):
+        keys = ["cellID_id", "boxID_id", "chnNum", "bigTestID_id", "testID_id"]
+        keystr = ",".join(keys)
+        sql = 'SELECT ' + keystr + ' FROM ' + self.cellTestRealDataTable + ' WHERE cellID_id='+str(cellid)
+        result = self.executeGetSQL(sql, keys)
         return result
 
     def executeInsertSQL(self, datadict, table):
@@ -203,15 +300,69 @@ class dbClass(object):
             dbconnection.rollback()
         dbconnection.close()
 
-    def insertCellALLRealData(self, datadict):
-        self.executeInsertSQL(self, datadict, self.cellTestHistoryDataTable)
+    def insertHistoryData(self, datadict):
+
+        self.executeInsertSQL(datadict, self.cellTestHistoryDataTable)
+
+    def updateGasTable(self, gastype, datadict, MFCid):
+        dbconnection = pymysql.connect(host=self.host, port=self.port, user=self.user, passwd=self.passwd,
+                                       db=self.db, charset="utf8")
+        cursor = dbconnection.cursor()
+        if gastype == "H2":
+            table = self.H2DeviceTable
+        elif gastype == "CO2":
+            table = self.CO2DeviceTable
+        elif gastype == "N2":
+            table = self.N2DeviceTable
+        elif gastype == "AIR":
+            table = self.AIRDeviceTable
+        elif gastype == "H2O":
+            table = self.H2ODeviceTable
+        elif gastype == "CH4":
+            table = self.CH4DeviceTable
+        else:
+            print("update gas table: unknown gas type")
+            return None
+        ROWstr = ''
+        for key in datadict:
+            if isinstance(datadict[key], str) == True:
+                ROWstr = ROWstr + key + '=\'' + datadict[key] + '\','
+            else:
+                ROWstr = ROWstr + key + '=' + str(datadict[key]) + ','
+        ROWstr = ROWstr[:-1];
+        sql = 'update ' + table + ' SET ' + ROWstr + ' where ID=' + str(MFCid)
+        try:
+            cursor.execute(sql)
+        except Exception as e:
+            print(e)
+            dbconnection.rollback()
+        dbconnection.commit()
+        dbconnection.close()
+
+    def updateOvenTable(self, datadict, Ovenid):
+        dbconnection = pymysql.connect(host=self.host, port=self.port, user=self.user, passwd=self.passwd,
+                                       db=self.db, charset="utf8")
+        cursor = dbconnection.cursor()
+        ROWstr = ''
+        for key in datadict:
+            if isinstance(datadict[key], str) == True:
+                ROWstr = ROWstr + key + '=\'' + datadict[key] + '\','
+            else:
+                ROWstr = ROWstr + key + '=' + str(datadict[key]) + ','
+        ROWstr = ROWstr[:-1];
+        sql = 'update ' + self.ovenDeviceTable + ' SET ' + ROWstr + ' where ID=' + str(Ovenid)
+        try:
+            cursor.execute(sql)
+        except Exception as e:
+            print(e)
+            dbconnection.rollback()
+        dbconnection.commit()
+        dbconnection.close()
 
     def updateCellRealData(self, cellid, datadict):
         dbconnection = pymysql.connect(host=self.host, port=self.port, user=self.user, passwd=self.passwd,
-                                       db=self.db,
-                                       charset="utf8")
+                                       db=self.db, charset="utf8")
         cursor = dbconnection.cursor()
-
         ROWstr = ''
 
         from collections import Iterable
@@ -224,10 +375,7 @@ class dbClass(object):
 
         ROWstr = ROWstr[:-1];
         ROWstr = ROWstr + ' '
-
         sql = 'update ' + self.cellRealDataTable + ' SET ' + ROWstr + 'where (cellID_id = ' + str(cellid) + ')'
-
-        # print(sql)
         try:
             cursor.execute(sql)
         except Exception as e:

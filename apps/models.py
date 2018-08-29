@@ -342,7 +342,7 @@ class cellTestRealDataTable(models.Model):
 
     sT2 = models.IntegerField(default=0, verbose_name="T2通讯状态", blank=True, null=True)
     T2 = models.DecimalField(max_digits=5, decimal_places=1, default=0, verbose_name="温度监测点2", blank=True, null=True)
-    tT2 = models.DateTimeField(auto_now=True, verbose_name="T2数据修改时间", null=True)
+    tT2 = models.DateTimeField(auto_now=True, verbose_name="T2数据修改时间",blank=True, null=True)
 
     sT3 = models.IntegerField(default=0, verbose_name="T3通讯状态", blank=True, null=True)
     T3 = models.DecimalField(max_digits=5, decimal_places=1, default=0, verbose_name="温度监测点3", blank=True, null=True)
@@ -421,7 +421,7 @@ class cellTestHistoryDataTable(models.Model):
 
     sCO2 = models.IntegerField(default=0, verbose_name="CO2通讯状态", null=True, blank=True)
     qCO2 = models.DecimalField(max_digits=5, decimal_places=2, default=0, verbose_name="CO2流量", null=True, blank=True)
-    tCO2 = models.DateTimeField(auto_now=True, verbose_name="CO2数据修改时间", blank=True)
+    tCO2 = models.DateTimeField(auto_now=True, verbose_name="CO2数据修改时间", null=True, blank=True)
 
     sCH4 = models.IntegerField(default=0, verbose_name="CH4通讯状态", null=True, blank=True)
     qCH4 = models.DecimalField(max_digits=5, decimal_places=2, default=0, verbose_name="CH4流量", null=True, blank=True)

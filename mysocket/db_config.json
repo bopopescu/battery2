@@ -1,9 +1,9 @@
 {
   "host": "localhost",
   "port": "3306",
-  "user": "lj",
-  "passwd": "lj",
-  "db": "battery",
+  "user": "root",
+  "passwd": "123456",
+  "db": "battery1",
   "cellDeviceTable": "apps_celldevicetable",
   "boxDeviceTable": "apps_boxdevicetable",
   "H2DeviceTable": "apps_h2devicetable",
@@ -13,7 +13,7 @@
   "N2DeviceTable": "apps_n2devicetable",
   "AIRDeviceTable": "apps_airdevicetable",
   "wdjDeviceTable": "apps_wdjdevicetable",
-  "ovenDeviceTable":"apps_ovendevicetable"
+  "ovenDeviceTable":"apps_ovendevicetable",
   "ovenPlanTable":"apps_ovenplantable",
   "ovenPlanDetailTable":"apps_ovenplandetailtable",
   "cellPlanTable":"apps_cellplantable",
@@ -22,6 +22,5 @@
   "testInfoTable":"apps_testinfotable",
   "cellTestRealDataTable":"apps_celltestrealdatatable",
   "eventTable":"apps_eventtable",
-  "cellTestHistoryDataTable":"apps_celltesthistorydatatable",
-
+  "cellTestHistoryDataTable":"apps_celltesthistorydatatable"
 }
