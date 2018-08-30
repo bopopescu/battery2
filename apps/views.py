@@ -51,23 +51,26 @@ def testline_status(request, box_num, channel_num):
     testid = testid.order_by("id").reverse()[0]
     try:
         crd = cellTestRealDataTable.objects.get(testID=testid)
-        cs=crd.currState
+        cs = crd.currState
     except:
         print("haha")
-        cs="stop"
+        cs = "stop"
     data = {"testline_status": cs}
     return JsonResponse(data)
 
+
 def oven_status(request):
-    data=get_oven_status_interface()
+    data = get_oven_status_interface()
     return JsonResponse(data)
+
 
 def cells_info(request):
-    data=get_cells_info_interface()
+    data = get_cells_info_interface()
     return JsonResponse(data)
 
+
 def tests_info(request):
-    data=get_tests_info_interface()
+    data = get_tests_info_interface()
     return JsonResponse(data)
 
 
@@ -78,29 +81,12 @@ def get_testdata_from_start(request, box_num, channel_num):
     # send data
 
     # data={"name": time.UTC(), "value":[UTC , value]}
-
-    data = {
-        'I': [{}, {}, {}, {}, {}, {}, {}],
-        'U': [{}, {}, {}, {}, {}, {}, {}],
-        'Q_N2': [{}, {}, {}, {}, {}, {}, {}],
-        'Q_H2': [{}, {}, {}, {}, {}, {}, {}],
-        'Q_CO2': [{}, {}, {}, {}, {}, {}, {}],
-        'Q_CH4': [{}, {}, {}, {}, {}, {}, {}],
-        'Q_Air': [{}, {}, {}, {}, {}, {}, {}],
-        'Q_H2O': [{}, {}, {}, {}, {}, {}, {}],
-        'T1': [{}, {}, {}, {}, {}, {}, {}],
-        'T2': [{}, {}, {}, {}, {}, {}, {}],
-        'T3': [{}, {}, {}, {}, {}, {}, {}],
-        'T4': [{}, {}, {}, {}, {}, {}, {}],
-    }
-
     ##test
     data = get_history_test_data_interface(box_num, channel_num,
                                            test_id=get_latest_testid_interface(box_num, channel_num))
     ##test
 
     return JsonResponse(data)
-    pass
 
 
 def get_testdata_real_time(request, box_num, channel_num):
@@ -122,7 +108,6 @@ def get_testdata_real_time(request, box_num, channel_num):
     data = get_real_time_test_data_interface(box_num, channel_num)
     ##test
     return JsonResponse(data)
-    pass
 
 
 def testline_info(request, box_num, channel_num):
@@ -160,11 +145,11 @@ def get_old_scheme(request):
 
 
 def delete_old_scheme(request, num):
-    return JsonResponse({})
+    return JsonResponse({"Message": "unknown"})
 
 
 def delete_old_oven_scheme(request, num):
-    return JsonResponse({})
+    return JsonResponse({"Message": "unknown"})
 
 
 @csrf_exempt
@@ -174,9 +159,11 @@ def save_scheme(request):
     scheme = json.loads(request.body.decode())
     if save_test_scheme_interface(scheme):
         print("保存成功")
+        message = "保存成功"
     else:
         print("保存过程中出错")
-    return JsonResponse({})
+        message = "保存过程中出错"
+    return JsonResponse({"Message":message})
 
 
 @csrf_exempt
@@ -186,41 +173,51 @@ def save_oven_scheme(request):
     scheme = json.loads(request.body.decode())
     if save_oven_test_scheme_interface(scheme):
         print("保存成功")
+        message = "保存成功"
     else:
         print("保存过程中出错")
-    return JsonResponse({})
+        message = "保存过程中出错"
+    return JsonResponse({"Message":message})
 
 
 @csrf_exempt
 def start_channel(request):
     datarecv = json.loads(request.body.decode())
     print(datarecv)
-    start_channel_interface(datarecv['box'], datarecv['channel'], datarecv['plan'])
-    return JsonResponse({})
+    message=start_channel_interface(datarecv['box'], datarecv['channel'], datarecv['plan'])
+    return JsonResponse({"Message":message})
 
 
 @csrf_exempt
 def start_oven(request):
     datarecv = json.loads(request.body.decode())
     print(datarecv)
-    start_oven_interface(datarecv['box'], datarecv['channel'], datarecv['oven'], datarecv['oplan'])
-    return JsonResponse({})
+    message=start_oven_interface(datarecv['box'], datarecv['channel'], datarecv['oven'], datarecv['oplan'])
+    return JsonResponse({"Message":message})
 
 
 @csrf_exempt
 def stop_oven(request):
     datarecv = json.loads(request.body.decode())
     print(datarecv)
-    stop_oven_interface(datarecv['box'], datarecv['channel'], datarecv['oven'], datarecv['oplan'])
-    return JsonResponse({})
+    message=stop_oven_interface(datarecv['box'], datarecv['channel'], datarecv['oven'], datarecv['oplan'])
+    return JsonResponse({"Message":message})
 
 
 @csrf_exempt
 def pause_oven(request):
     datarecv = json.loads(request.body.decode())
     print(datarecv)
-    pause_oven_interface(datarecv['box'], datarecv['channel'], datarecv['oven'], datarecv['oplan'])
-    return JsonResponse({})
+    message=pause_oven_interface(datarecv['box'], datarecv['channel'], datarecv['oven'], datarecv['oplan'])
+    return JsonResponse({"Message":message})
+
+
+@csrf_exempt
+def resume_oven(request):
+    datarecv = json.loads(request.body.decode())
+    print(datarecv)
+    message=resume_oven_interface(datarecv['box'], datarecv['channel'], datarecv['oven'], datarecv['oplan'])
+    return JsonResponse({"Message":message})
 
 
 @csrf_exempt
@@ -235,24 +232,24 @@ def make_test(request):
 def pause_channel(request):
     datarecv = json.loads(request.body.decode())
     print(datarecv)
-    pause_channel_interface(datarecv['box'], datarecv['channel'])
-    return JsonResponse({})
+    message=pause_channel_interface(datarecv['box'], datarecv['channel'])
+    return JsonResponse({"Message":message})
 
 
 @csrf_exempt
 def stop_channel(request):
     datarecv = json.loads(request.body.decode())
     print(datarecv)
-    stop_channel_interface(datarecv['box'], datarecv['channel'])
-    return JsonResponse({})
+    message=stop_channel_interface(datarecv['box'], datarecv['channel'])
+    return JsonResponse({"Message":message})
 
 
 @csrf_exempt
 def continue_channel(request):
     datarecv = json.loads(request.body.decode())
     print(datarecv)
-    continue_channel_interface(datarecv['box'], datarecv['channel'])
-    return JsonResponse({})
+    message=continue_channel_interface(datarecv['box'], datarecv['channel'])
+    return JsonResponse({"Message":message})
 
 
 def get_gas_info(request, box_id, chn_id):
@@ -266,17 +263,17 @@ def set_gas(request, box_id, chn_id):
     print(datarecv)
     if set_gas_interface(box_id, chn_id, datarecv):
         print("气体设置成功")
+        message="气体设置成功"
     else:
         print("气体设置失败！")
-    return JsonResponse({})
+        message="气体设置失败"
+    return JsonResponse({"Message":message})
 
 
 class IndexView(View):
     def get(self, request):
         customer = 'finacial'
-        #return render(request, "monitor.html")
+        # return render(request, "monitor.html")
         return render(request, "index.html", {
             "customer": customer,
         })
-
-

@@ -73,6 +73,7 @@
                     <button class="btn btn-secondary" type="button" onclick="set_interval()">设置</button>
                     <button class="btn btn-secondary" type="button" onclick="stop_refresh()">停止刷新</button>
                     </span>
+
                     </div>
                 </form>
             </div>
@@ -81,7 +82,7 @@
         <div class="row">
             <div class="col-lg-12">
                 <span>当前通道状态：</span>
-                <span class="badge badge-success" id="testline_status"></span>
+                <span class="label label-success" id="testline_status"></span>
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <div class="btn-group" role="group" aria-label="...">
                     <button type="button" class="btn btn-success" onclick="continue_testline()">继续</button>
@@ -112,7 +113,8 @@
                     </a>
                     <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
                         <li><a href="#UIchart" tabindex="-1" data-toggle="tab">电流/电压</a></li>
-                        <li><a href="#Tchart" tabindex="-1" data-toggle="tab">温度</a></li>
+                        <li><a href="#T0chart" tabindex="-1" data-toggle="tab">电炉温度</a></li>
+                        <li><a href="#Tchart" tabindex="-1" data-toggle="tab">测温点温度</a></li>
                         <li><a href="#Qchart" tabindex="-1" data-toggle="tab">气流量</a></li>
                     </ul>
                 </li>
@@ -140,7 +142,7 @@
                 <div class="tab-pane fade in active" id="briefinfo">
 
                     <div class="col-lg-2 col-xs-4" style="margin-left:0px;padding:0px 5px 0px 0px">
-                        <div class="small-box bg-orange">
+                        <div class="small-box bg-yellow-gradient">
                             <div class="inner" id="I">
                                 <p id="I_name">电流</p>
                                 <p style="font-size:20px;line-height:10px;"><span id="I_val">0</span> <sup
@@ -149,7 +151,7 @@
                         </div>
                     </div>
                     <div class="col-lg-2 col-xs-4" style="margin-left:0px;padding:0px 5px 0px 0px">
-                        <div class="small-box bg-orange" style="height:">
+                        <div class="small-box bg-yellow-gradient" style="height:">
                             <div class="inner" id="U">
                                 <p id="U_name">电压</p>
                                 <p style="font-size:20px;line-height:10px;"><span id="U_val">0</span> <sup
@@ -158,7 +160,26 @@
                         </div>
                     </div>
                     <div class="col-lg-2 col-xs-4" style="margin-left:0px;padding:0px 5px 0px 0px">
-                        <div class="small-box bg-orange">
+                        <div class="small-box bg-yellow-gradient">
+                            <div class="inner" id="q">
+                                <p id="q_name">容量</p>
+                                <p style="font-size:20px;line-height:10px;"><span id="q_val">0</span> <sup
+                                        style="font-size: 12px">C(mAh)</sup></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-xs-4" style="margin-left:0px;padding:0px 5px 0px 0px">
+                        <div class="small-box bg-yellow-gradient">
+                            <div class="inner" id="k">
+                                <p id="k_name">当前工步号</p>
+                                <p style="font-size:20px;line-height:10px;"><span id="k_val">0</span> <sup
+                                        style="font-size: 12px"></sup></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2 col-xs-4" style="margin-left:0px;padding:0px 5px 0px 0px">
+                        <div class="small-box bg-blue-gradient">
                             <div class="inner" id="Q_H2">
                                 <p id="Q_H2_name">氢气流量</p>
                                 <p style="font-size:20px;line-height:10px;"><span id="Q_H2_val">0</span> <sup
@@ -167,7 +188,7 @@
                         </div>
                     </div>
                     <div class="col-lg-2 col-xs-4" style="margin-left:0px;padding:0px 5px 0px 0px">
-                        <div class="small-box bg-orange">
+                        <div class="small-box bg-blue-gradient">
                             <div class="inner" id="Q_N2">
                                 <p id="Q_N2_name">氮气流量</p>
                                 <p style="font-size:20px;line-height:10px;"><span id="Q_N2_val">0</span> <sup
@@ -176,7 +197,7 @@
                         </div>
                     </div>
                     <div class="col-lg-2 col-xs-4" style="margin-left:0px;padding:0px 5px 0px 0px">
-                        <div class="small-box bg-orange">
+                        <div class="small-box bg-blue-gradient">
                             <div class="inner" id="Q_Air">
                                 <p id="Q_Air_name">空气流量</p>
                                 <p style="font-size:20px;line-height:10px;"><span id="Q_Air_val">0</span> <sup
@@ -185,7 +206,7 @@
                         </div>
                     </div>
                     <div class="col-lg-2 col-xs-4" style="margin-left:0px;padding:0px 5px 0px 0px">
-                        <div class="small-box bg-orange">
+                        <div class="small-box bg-blue-gradient">
                             <div class="inner" id="Q_CH4">
                                 <p id="Q_CH4_name">甲烷流量</p>
                                 <p style="font-size:20px;line-height:10px;"><span id="Q_CH4_val">0</span> <sup
@@ -195,7 +216,7 @@
                         </div>
                     </div>
                     <div class="col-lg-2 col-xs-4" style="margin-left:0px;padding:0px 5px 0px 0px">
-                        <div class="small-box bg-orange">
+                        <div class="small-box bg-blue-gradient">
                             <div class="inner" id="Q_CO2">
                                 <p id="Q_CO2_name">二氧化碳流量</p>
                                 <p style="font-size:20px;line-height:10px;"><span id="Q_CO2_val">0</span> <sup
@@ -204,7 +225,7 @@
                         </div>
                     </div>
                     <div class="col-lg-2 col-xs-4" style="margin-left:0px;padding:0px 5px 0px 0px">
-                        <div class="small-box bg-orange">
+                        <div class="small-box bg-blue-gradient">
                             <div class="inner" id="Q_CO2">
                                 <p id="Q_H2O_name">水蒸气流量</p>
                                 <p style="font-size:20px;line-height:10px;"><span id="Q_H2O_val">0</span> <sup
@@ -213,8 +234,8 @@
                         </div>
                     </div>
                     <div class="col-lg-2 col-xs-4" style="margin-left:0px;padding:0px 5px 0px 0px">
-                        <div class="small-box bg-orange">
-                            <div class="inner" id="T">
+                        <div class="small-box bg-red-gradient">
+                            <div class="inner" id="T0">
                                 <p id="T_name">控温点温度</p>
                                 <p style="font-size:20px;line-height:10px;"><span id="T0_val">0</span> <sup
                                         style="font-size: 12px">&#176C</sup></p>
@@ -222,23 +243,42 @@
                         </div>
                     </div>
                     <div class="col-lg-2 col-xs-4" style="margin-left:0px;padding:0px 5px 0px 0px">
-                        <div class="small-box bg-orange">
-                            <div class="inner" id="q">
-                                <p id="q_name">容量</p>
-                                <p style="font-size:20px;line-height:10px;"><span id="q_val">0</span> <sup
-                                        style="font-size: 12px">C(mAh)</sup></p>
+                        <div class="small-box bg-red-gradient">
+                            <div class="inner" id="T1">
+                                <p id="T_name">测温点1温度</p>
+                                <p style="font-size:20px;line-height:10px;"><span id="T1_val">0</span> <sup
+                                        style="font-size: 12px">&#176C</sup></p>
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-2 col-xs-4" style="margin-left:0px;padding:0px 5px 0px 0px">
-                        <div class="small-box bg-orange">
-                            <div class="inner" id="k">
-                                <p id="k_name">当前工步号</p>
-                                <p style="font-size:20px;line-height:10px;"><span id="k_val">0</span> <sup
-                                        style="font-size: 12px"></sup></p>
+                        <div class="small-box bg-red-gradient">
+                            <div class="inner" id="T2">
+                                <p id="T_name">测温点2温度</p>
+                                <p style="font-size:20px;line-height:10px;"><span id="T2_val">0</span> <sup
+                                        style="font-size: 12px">&#176C</sup></p>
                             </div>
                         </div>
                     </div>
+                    <div class="col-lg-2 col-xs-4" style="margin-left:0px;padding:0px 5px 0px 0px">
+                        <div class="small-box bg-red-gradient">
+                            <div class="inner" id="T3">
+                                <p id="T_name">测温点3温度</p>
+                                <p style="font-size:20px;line-height:10px;"><span id="T3_val">0</span> <sup
+                                        style="font-size: 12px">&#176C</sup></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-xs-4" style="margin-left:0px;padding:0px 5px 0px 0px">
+                        <div class="small-box bg-red-gradient">
+                            <div class="inner" id="T4">
+                                <p id="T_name">测温点4温度</p>
+                                <p style="font-size:20px;line-height:10px;"><span id="T4_val">0</span> <sup
+                                        style="font-size: 12px">&#176C</sup></p>
+                            </div>
+                        </div>
+                    </div>
+
 
                 </div>
                 <div class="tab-pane fade" id="UIchart">
@@ -247,6 +287,10 @@
                 <div class="tab-pane fade" id="Tchart">
                     <div id="T_t_chart" style="height: 400px;width:800px;"></div>
                 </div>
+                <div class="tab-pane fade" id="T0chart">
+                    <div id="T0_t_chart" style="height: 400px;width:800px;"></div>
+                </div>
+
                 <div class="tab-pane fade" id="Qchart">
                     <div id="Q_t_chart" style="height: 400px;width:800px;"></div>
                 </div>

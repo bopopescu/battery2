@@ -12,6 +12,7 @@ import json
 import binascii
 import string
 from datetime import datetime
+import serial
 
 
 class myConfig(object):
@@ -45,6 +46,7 @@ class socketConnect(object):
             sum = sum + data[4 + i]
         return sum
 
+    # 若不正常，则直接返回None
     def buildCmdMessage(self, config):
 
         if (config.type == 'box'):
@@ -66,7 +68,7 @@ class socketConnect(object):
 
                 # 更新箱号
                 startCMD[6] = config.boxid
-
+                # startCMD[6] = 0
                 # 命令号
                 startCMD[7] = 0x06
 
@@ -97,6 +99,32 @@ class socketConnect(object):
 
                 for j in range(totalStep):
                     startCMD[305 + 40 * j] = j + 1  # 当前工步号从1开始
+                    # 计算限制条件数
+                    n_limit = {}
+                    if config.plan[j]['tTH'] is not None and config.plan[j]['tTH'] != 0:
+                        n_limit.update({"tTH": config.plan[j]['tTH']})
+                    if config.plan[j]['uTH'] is not None and config.plan[j]['uTH'] != 0:
+                        n_limit.update({"uTH": config.plan[j]['uTH']})
+                    if config.plan[j]['iTH'] is not None and config.plan[j]['iTH'] != 0:
+                        n_limit.update({"iTH": config.plan[j]['iTH']})
+                    if config.plan[j]['qTH'] is not None and config.plan[j]['qTH'] != 0:
+                        n_limit.update({"qTH": config.plan[j]['qTH']})
+                    limit_code = {"tTH": 0x11, "uTH": 0x22, "iTH": 0x33, "qTH": 0x44, "qATH": 0x55, "None": 0xF1}
+                    for i in range(5):  # 首先置空所有的限制条件
+                        startCMD[305 + 40 * j + 10 + 5 * i] = 0xF1  # 无限制条件
+                        startCMD[305 + 40 * j + 11 + 5 * i] = 0  # 限制条件 4个字节
+                        startCMD[305 + 40 * j + 12 + 5 * i] = 0  # 限制条件 4个字节
+                        startCMD[305 + 40 * j + 13 + 5 * i] = 0  # 限制条件 4个字节
+                        startCMD[305 + 40 * j + 14 + 5 * i] = 0  # 限制条件 4个字节
+                    n = 0
+                    for i in n_limit.keys():
+                        startCMD[305 + 40 * j + 10 + 5 * n] = limit_code[i]  # 限制条件n
+                        startCMD[305 + 40 * j + 11 + 5 * n] = (n_limit[i] & 0xFF000000) >> 24  # 限制条件 4个字节
+                        startCMD[305 + 40 * j + 12 + 5 * n] = (n_limit[i] & 0xFF0000) >> 16  # 限制条件 4个字节
+                        startCMD[305 + 40 * j + 13 + 5 * n] = (n_limit[i] & 0xFF00) >> 8  # 限制条件 4个字节
+                        startCMD[305 + 40 * j + 14 + 5 * n] = (n_limit[i] & 0xFF)  # 限制条件 4个字节
+                        n = n + 1
+
                     if config.plan[j]['mode'] == '静置':  # 00 71 B1 18
                         startCMD[305 + 40 * j + 1] = 0x01  # 工作模式
                         startCMD[305 + 40 * j + 2] = 0  # (config.plan[j]['tTH']&0xFF000000)>>24	#主参数 4个字节
@@ -108,36 +136,6 @@ class socketConnect(object):
                         startCMD[305 + 40 * j + 7] = 0  # 副参数 4个字节
                         startCMD[305 + 40 * j + 8] = 0  # 副参数 4个字节
                         startCMD[305 + 40 * j + 9] = 1  # 副参数 4个字节
-
-                        startCMD[305 + 40 * j + 10] = 0x11  # 限制条件1
-                        startCMD[305 + 40 * j + 11] = (config.plan[j]['tTH'] & 0xFF000000) >> 24  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 12] = (config.plan[j]['tTH'] & 0xFF0000) >> 16  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 13] = (config.plan[j]['tTH'] & 0xFF00) >> 8  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 14] = (config.plan[j]['tTH'] & 0xFF)  # 限制条件 4个字节
-
-                        startCMD[305 + 40 * j + 15] = 0xF1  # 限制条件2
-                        startCMD[305 + 40 * j + 16] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 17] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 18] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 19] = 0  # 限制条件 4个字节
-
-                        startCMD[305 + 40 * j + 20] = 0xF1  # 限制条件3
-                        startCMD[305 + 40 * j + 21] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 22] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 23] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 24] = 0  # 限制条件 4个字节
-
-                        startCMD[305 + 40 * j + 25] = 0xF1  # 限制条件4
-                        startCMD[305 + 40 * j + 26] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 27] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 28] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 29] = 0  # 限制条件 4个字节
-
-                        startCMD[305 + 40 * j + 30] = 0xF1  # 限制条件5
-                        startCMD[305 + 40 * j + 31] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 32] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 33] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 34] = 0  # 限制条件 4个字节
 
                         startCMD[305 + 40 * j + 35] = 0x11  # 记录条件
                         startCMD[305 + 40 * j + 36] = 0  # 记录条件 4个字节
@@ -157,36 +155,6 @@ class socketConnect(object):
                         startCMD[305 + 40 * j + 8] = 0  # 副参数 4个字节
                         startCMD[305 + 40 * j + 9] = 1  # 副参数 4个字节
 
-                        startCMD[305 + 40 * j + 10] = 0x22  # 限制条件
-                        startCMD[305 + 40 * j + 11] = (config.plan[j]['uTH'] & 0xFF000000) >> 24  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 12] = (config.plan[j]['uTH'] & 0xFF0000) >> 16  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 13] = (config.plan[j]['uTH'] & 0xFF00) >> 8  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 14] = (config.plan[j]['uTH'] & 0xFF)  # 限制条件 4个字节
-
-                        startCMD[305 + 40 * j + 15] = 0xF1  # 限制条件2
-                        startCMD[305 + 40 * j + 16] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 17] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 18] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 19] = 0  # 限制条件 4个字节
-
-                        startCMD[305 + 40 * j + 20] = 0xF1  # 限制条件3
-                        startCMD[305 + 40 * j + 21] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 22] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 23] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 24] = 0  # 限制条件 4个字节
-
-                        startCMD[305 + 40 * j + 25] = 0xF1  # 限制条件4
-                        startCMD[305 + 40 * j + 26] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 27] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 28] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 29] = 0  # 限制条件 4个字节
-
-                        startCMD[305 + 40 * j + 30] = 0xF1  # 限制条件5
-                        startCMD[305 + 40 * j + 31] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 32] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 33] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 34] = 0  # 限制条件 4个字节
-
                         startCMD[305 + 40 * j + 35] = 0x11  # 记录条件
                         startCMD[305 + 40 * j + 36] = 0  # 记录条件 4个字节
                         startCMD[305 + 40 * j + 37] = 0  # 记录条件 4个字节
@@ -194,7 +162,22 @@ class socketConnect(object):
                         startCMD[305 + 40 * j + 39] = 0x60  # 记录条件 4个字节
 
                     elif config.plan[j]['mode'] == '恒流放电':
-                        pass
+                        startCMD[305 + 40 * j + 1] = 0x03  # 工作模式
+                        startCMD[305 + 40 * j + 2] = (config.plan[j]['i'] & 0xFF000000) >> 24  # 主参数 4个字节
+                        startCMD[305 + 40 * j + 3] = (config.plan[j]['i'] & 0xFF0000) >> 16  # 主参数 4个字节
+                        startCMD[305 + 40 * j + 4] = (config.plan[j]['i'] & 0xFF00) >> 8  # 主参数 4个字节
+                        startCMD[305 + 40 * j + 5] = (config.plan[j]['i'] & 0xFF)  # 主参数 4个字节
+
+                        startCMD[305 + 40 * j + 6] = 0  # 副参数 4个字节
+                        startCMD[305 + 40 * j + 7] = 0  # 副参数 4个字节
+                        startCMD[305 + 40 * j + 8] = 0  # 副参数 4个字节
+                        startCMD[305 + 40 * j + 9] = 1  # 副参数 4个字节
+
+                        startCMD[305 + 40 * j + 35] = 0x11  # 记录条件
+                        startCMD[305 + 40 * j + 36] = 0  # 记录条件 4个字节
+                        startCMD[305 + 40 * j + 37] = 0  # 记录条件 4个字节
+                        startCMD[305 + 40 * j + 38] = 0xEA  # 记录条件 4个字节
+                        startCMD[305 + 40 * j + 39] = 0x60  # 记录条件 4个字节
 
                     elif config.plan[j]['mode'] == '恒压充电':
                         startCMD[305 + 40 * j + 1] = 0x04  # 工作模式
@@ -208,36 +191,6 @@ class socketConnect(object):
                         startCMD[305 + 40 * j + 8] = 0  # 副参数 4个字节
                         startCMD[305 + 40 * j + 9] = 1  # 副参数 4个字节
 
-                        startCMD[305 + 40 * j + 10] = 0x33  # 限制条件
-                        startCMD[305 + 40 * j + 11] = (config.plan[j]['iTH'] & 0xFF000000) >> 24  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 12] = (config.plan[j]['iTH'] & 0xFF0000) >> 16  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 13] = (config.plan[j]['iTH'] & 0xFF00) >> 8  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 14] = (config.plan[j]['iTH'] & 0xFF)  # 限制条件 4个字节
-
-                        startCMD[305 + 40 * j + 15] = 0xF1  # 限制条件2
-                        startCMD[305 + 40 * j + 16] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 17] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 18] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 19] = 0  # 限制条件 4个字节
-
-                        startCMD[305 + 40 * j + 20] = 0xF1  # 限制条件3
-                        startCMD[305 + 40 * j + 21] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 22] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 23] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 24] = 0  # 限制条件 4个字节
-
-                        startCMD[305 + 40 * j + 25] = 0xF1  # 限制条件4
-                        startCMD[305 + 40 * j + 26] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 27] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 28] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 29] = 0  # 限制条件 4个字节
-
-                        startCMD[305 + 40 * j + 30] = 0xF1  # 限制条件5
-                        startCMD[305 + 40 * j + 31] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 32] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 33] = 0  # 限制条件 4个字节
-                        startCMD[305 + 40 * j + 34] = 0  # 限制条件 4个字节
-
                         startCMD[305 + 40 * j + 35] = 0x11  # 记录条件
                         startCMD[305 + 40 * j + 36] = 0  # 记录条件 4个字节
                         startCMD[305 + 40 * j + 37] = 0  # 记录条件 4个字节
@@ -245,39 +198,55 @@ class socketConnect(object):
                         startCMD[305 + 40 * j + 39] = 0x60  # 记录条件 4个字节
 
                     elif config.plan[j]['mode'] == '恒压放电':
-                        pass
-                    elif config.plan[j]['mode'] == '恒压限流充电':
-                        pass
-                    elif config.plan[j]['mode'] == '恒压限流放电':
-                        pass
-                    elif config.plan[j]['mode'] == '恒阻放电':
-                        pass
-                    elif config.plan[j]['mode'] == '恒功率放电':
-                        pass
-                    elif config.plan[j]['mode'] == '恒功率充电':
-                        pass
-                    elif config.plan[j]['mode'] == '循环':
-                        pass
-                    elif config.plan[j]['mode'] == '跳转':
-                        pass
-                    elif config.plan[j]['mode'] == '电压采样':
-                        pass
+                        startCMD[305 + 40 * j + 1] = 0x05  # 工作模式
+                        startCMD[305 + 40 * j + 2] = (config.plan[j]['u'] & 0xFF000000) >> 24  # 主参数 4个字节
+                        startCMD[305 + 40 * j + 3] = (config.plan[j]['u'] & 0xFF0000) >> 16  # 主参数 4个字节
+                        startCMD[305 + 40 * j + 4] = (config.plan[j]['u'] & 0xFF00) >> 8  # 主参数 4个字节
+                        startCMD[305 + 40 * j + 5] = (config.plan[j]['u'] & 0xFF)  # 主参数 4个字节
+
+                        startCMD[305 + 40 * j + 6] = 0  # 副参数 4个字节
+                        startCMD[305 + 40 * j + 7] = 0  # 副参数 4个字节
+                        startCMD[305 + 40 * j + 8] = 0  # 副参数 4个字节
+                        startCMD[305 + 40 * j + 9] = 1  # 副参数 4个字节
+
+                        startCMD[305 + 40 * j + 35] = 0x11  # 记录条件
+                        startCMD[305 + 40 * j + 36] = 0  # 记录条件 4个字节
+                        startCMD[305 + 40 * j + 37] = 0  # 记录条件 4个字节
+                        startCMD[305 + 40 * j + 38] = 0xEA  # 记录条件 4个字节
+                        startCMD[305 + 40 * j + 39] = 0x60  # 记录条件 4个字节
+
+                    else:
+                        print("buildCMD_box_start: unknown plan[mode] return None")
+                        return None
+                    # elif config.plan[j]['mode'] == '恒压限流充电':
+                    #     pass
+                    # elif config.plan[j]['mode'] == '恒压限流放电':
+                    #     pass
+                    # elif config.plan[j]['mode'] == '恒阻放电':
+                    #     pass
+                    # elif config.plan[j]['mode'] == '恒功率放电':
+                    #     pass
+                    # elif config.plan[j]['mode'] == '恒功率充电':
+                    #     pass
+                    # elif config.plan[j]['mode'] == '循环':
+                    #     pass
+                    # elif config.plan[j]['mode'] == '跳转':
+                    #     pass
+                    # elif config.plan[j]['mode'] == '电压采样':
+                    #     pass
 
                 # 总的记录条件
                 startCMD[305 + 40 * totalStep] = 0  # 记录条件
                 startCMD[305 + 40 * totalStep + 1] = 0  # 记录条件 4个字节
                 startCMD[305 + 40 * totalStep + 2] = 0  # 记录条件 4个字节
                 startCMD[305 + 40 * totalStep + 3] = 0  # 记录条件 4个字节
-
                 # 更新校验和
                 sum = self.checksum(startCMD)
                 startCMD[-4] = sum & 0xFF
                 startCMD[-3] = (sum & 0xFF00) >> 8
-
                 # 构造报文尾
                 startCMD[-1] = 0xAA
                 startCMD[-2] = 0x55
-
                 return startCMD
 
             elif (config.cmd == 'stop'):
@@ -289,7 +258,7 @@ class socketConnect(object):
 
                 # 更新箱号
                 stopCMD[6] = config.boxid
-
+                # stopCMD[6] = 0
                 # 更新通道号
                 chnInt = config.chnnum // 8
                 chnRes = config.chnnum % 8
@@ -310,7 +279,7 @@ class socketConnect(object):
                      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x55, 0xAA])
                 # 更新箱号
                 resumeCMD[6] = config.boxid
-
+                # resumeCMD[6] = 0
                 # 更新暂停命令
                 resumeCMD[8] = 0xFF  # 0x0暂停 0xff继续
 
@@ -335,7 +304,7 @@ class socketConnect(object):
 
                 # 更新箱号
                 pauseCMD[6] = config.boxid
-
+                # pauseCMD[6] = 0
                 # 更新暂停命令
                 pauseCMD[8] = 0  # 暂停
 
@@ -357,8 +326,8 @@ class socketConnect(object):
                     [0xAA, 0x55, 0x0C, 0x00, 0x00, 0x00, 0x00, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x09, 0x00,
                      0x55, 0xAA])
                 # 更新箱号
-                readBoxRealDataCMD[6] = int(config.boxid) % 10000
-
+                readBoxRealDataCMD[6] = config.boxid
+                # readBoxRealDataCMD[6] = 0
                 # 更新校验和
                 sum = self.checksum(readBoxRealDataCMD)
                 readBoxRealDataCMD[-4] = sum & 0xFF
@@ -377,8 +346,12 @@ class socketConnect(object):
                 return cmd
 
             elif config.cmd == "stop":
+                cmd_list = []
                 cmd = o.buildcmd("r/h/s", "set", 12)
-                return cmd
+                cmd_list.append(cmd)
+                cmd = o.buildcmd("SV/SteP", "set", 1)
+                cmd_list.append(cmd)
+                return cmd_list
 
             elif config.cmd == "resume":
                 cmd = o.buildcmd("r/h/s", "set", 0)
@@ -398,6 +371,7 @@ class socketConnect(object):
                 for step in config.plan:
                     cmd_list.append(o.buildcmd("C" + str(i), "set", int(step["T"] * 10)))
                     cmd_list.append(o.buildcmd("t" + str(i), "set", int(step["time"])))
+                    i = i + 1
                 return cmd_list
 
             else:
@@ -427,7 +401,23 @@ class socketConnect(object):
             print("BulidCMD: unknown config.type")
             return None
 
+    # 若不正常，则直接返回None
     def sendCmdMessage(self, config):
+        if config.type == "oven":
+            try:
+                port = serial.Serial(port='COM1', baudrate=9600, bytesize=serial.EIGHTBITS, parity=serial.PARITY_NONE,
+                                     stopbits=serial.STOPBITS_ONE, timeout=1)  # 9600 8-None-1/2
+                port.write(config.senddata)
+            except:
+                print("串口连接不正常或者发送不正常")
+                return None
+            time.sleep(0.2)
+            data = port.read_all()
+            print(data)
+            if len(data) != 10:
+                print("接收数据长度不对！")
+                return None
+            return data
         signal.signal(signal.SIGINT, quit)
         signal.signal(signal.SIGTERM, quit)
         try:
@@ -444,15 +434,15 @@ class socketConnect(object):
                     return recvdata
                 except:  # 接收数据失败
                     print('recv data timeout')
-                    return bytearray([0xdd])
+                    return None
             except:  # 读取数据失败
                 print('send temReadCmd error')
-                return bytearray([0xee])
+                return None
             s.shutdown(2)
             s.close()
         except:  # 建立连接失败
             print('connect: ' + config.type + config.ip + ':' + str(config.port) + ' failed')
-            return bytearray([0xff])
+            return None
 
     def mainProcess(self):
         config = myConfig()
@@ -476,12 +466,15 @@ class socketConnect(object):
                 if i['currState'] == 'stop' and i['nextState'] == 'start':
                     # 首先设置方案
                     ovenPlan = db.getOvenTestPlan(i)
-                    config.setConfig(type="oven", ip=i["IP"], port=["PortNum"], cmd="setplan", plan=ovenPlan,
+                    config.setConfig(type="oven", ip=i["IP"], port=i["PortNum"], cmd="setplan", plan=ovenPlan,
                                      addr=i["Addr"])
                     senddata = self.buildCmdMessage(config)
+
                     for j in senddata:
                         config.senddata = j
                         config.recvdata = self.sendCmdMessage(config)
+                        if config.recvdata is None:
+                            break
                     # 然后启动电炉
                     config.setConfig(type="oven", ip=i["IP"], port=i["PortNum"], cmd="start", plan=ovenPlan,
                                      addr=i["Addr"])
@@ -490,32 +483,38 @@ class socketConnect(object):
                     self.updateOvenState(config, i["ID"])
 
                 elif i['currState'] == 'start' and i['nextState'] == 'pause':
-                    config.setConfig(type="oven", ip=i["IP"], port=["PortNum"], cmd="pause", addr=i["Addr"])
+                    config.setConfig(type="oven", ip=i["IP"], port=i["PortNum"], cmd="pause", addr=i["Addr"])
                     config.senddata = self.buildCmdMessage(config)
                     config.recvdata = self.sendCmdMessage(config)
                     self.updateOvenState(config, i["ID"])
 
                 elif i['currState'] == 'start' and i['nextState'] == 'stop':
-                    config.setConfig(type="oven", ip=i["IP"], port=["PortNum"], cmd="stop", addr=i["Addr"])
-                    config.senddata = self.buildCmdMessage(config)
-                    config.recvdata = self.sendCmdMessage(config)
+                    config.setConfig(type="oven", ip=i["IP"], port=i["PortNum"], cmd="stop", addr=i["Addr"])
+                    senddata = self.buildCmdMessage(config)
+                    for j in senddata:
+                        config.senddata = j
+                        config.recvdata = self.sendCmdMessage(config)
                     self.updateOvenState(config, i["ID"])
 
                 elif i['currState'] == 'pause' and i['nextState'] == 'start':
-                    config.setConfig(type="oven", ip=i["IP"], port=["PortNum"], cmd="resume", addr=i["Addr"])
+                    config.setConfig(type="oven", ip=i["IP"], port=i["PortNum"], cmd="start", addr=i["Addr"])
                     config.senddata = self.buildCmdMessage(config)
                     config.recvdata = self.sendCmdMessage(config)
                     self.updateOvenState(config, i["ID"])
 
                 elif i['currState'] == 'pause' and i['nextState'] == 'stop':
-                    config.setConfig(type="oven", ip=i["IP"], port=["PortNum"], cmd="stop", addr=i["Addr"])
-                    config.senddata = self.buildCmdMessage(config)
-                    config.recvdata = self.sendCmdMessage(config)
+                    config.setConfig(type="oven", ip=i["IP"], port=i["PortNum"], cmd="stop", addr=i["Addr"])
+                    senddata = self.buildCmdMessage(config)
+                    for j in senddata:
+                        config.senddata = j
+                        config.recvdata = self.sendCmdMessage(config)
                     self.updateOvenState(config, i["ID"])
 
+                else:
+                    print("oven under handle: unknown currstate & nextstate")
             # 流量计主逻辑
             for i in lljUnderHandle:
-                config.setConfig(type="gas", ip=i["IP"], port=["PortNum"], cmd="set", addr=i['Addr'],
+                config.setConfig(type="gas", ip=i["IP"], port=i["PortNum"], cmd="set", addr=i['Addr'],
                                  plan=i["nextState"])
                 config.senddata = self.buildCmdMessage(config)
                 config.recvdata = self.sendCmdMessage(config)
@@ -531,7 +530,7 @@ class socketConnect(object):
                                      cellid=i['cellID_id'],
                                      ip=COM['IP'],
                                      port=COM['PortNum'],
-                                     boxid=i['boxID_id'],
+                                     boxid=COM['Addr'],
                                      chnnum=i['chnNum'],
                                      cmd='pause')
                     config.senddata = self.buildCmdMessage(config)
@@ -544,7 +543,7 @@ class socketConnect(object):
                                      cellid=i['cellID_id'],
                                      ip=COM['IP'],
                                      port=COM['PortNum'],
-                                     boxid=i['boxID_id'],
+                                     boxid=COM['Addr'],
                                      chnnum=i['chnNum'],
                                      cmd='stop')
                     config.senddata = self.buildCmdMessage(config)
@@ -559,7 +558,7 @@ class socketConnect(object):
                                      cellid=i['cellID_id'],
                                      ip=COM['IP'],
                                      port=COM['PortNum'],
-                                     boxid=i['boxID_id'],
+                                     boxid=COM['Addr'],
                                      chnnum=i['chnNum'],
                                      cmd='start',
                                      plan=cellplan,
@@ -575,19 +574,25 @@ class socketConnect(object):
                                      cellid=i['cellID_id'],
                                      ip=COM['IP'],
                                      port=COM['PortNum'],
-                                     boxid=i['boxID_id'],
+                                     boxid=COM['Addr'],
                                      chnnum=i['chnNum'],
                                      cmd='resume')
                     config.senddata = self.buildCmdMessage(config)
                     config.recvdata = self.sendCmdMessage(config)
                     self.updateCellBoxState(config)
 
+                else:
+                    print("cell under handle: unknown currstate & nextstate")
+
             # 以上程序执行完之后，所有的控制命令均已处理，接下来处理读数命令
             # 首先获取正在进行的父测试，可以得知该测试所对应的设备信息，然后逐个查询
+
             testUnderHandle = db.getUncompleteBigTest()
             for i in testUnderHandle:
                 # 依次读取各组件的信息，并更新数据表，最后插入历史数据表
                 AllData = {}
+                # 此处逻辑为，若该测试中包含某设备，则查询该设备的数据，并将其入库
+                # 若无该设备，则依然入库，但所有值均为0
                 if i["boxID_id"] is not None:
                     print('box:readRealData')
                     COM = db.getCellsComponetCOM({"cellID_id": i['cellID_id']})[0]
@@ -595,15 +600,30 @@ class socketConnect(object):
                                      cellid=i['cellID_id'],
                                      ip=COM['IP'],
                                      port=COM['PortNum'],
-                                     boxid=i['boxID_id'],
+                                     boxid=COM['Addr'],
                                      cmd='read',
                                      chnnum=i['chnNum'],
                                      waittime=2,
                                      length=4000)
                     config.senddata = self.buildCmdMessage(config)
                     config.recvdata = self.sendCmdMessage(config)
-                    datadict=self.updateCellRealData(config)
-                    AllData.update(datadict if datadict is not None else {})
+                    datadict = self.updateCellRealData(config)
+                    print(datadict)
+                    AllData.update(datadict if datadict is not None else {'mode': 0, 'T': 0, 'r': 0,
+                                                                          'overOutDataFlag': 0, 'qA': 0,
+                                                                          'tc': 0, 'q': 0, 'i': 0, 'resultDataFlag': 0,
+                                                                          'chMasterSlaveFlag': 0, 'ta': 0,
+                                                                          'k': 0,
+                                                                          'celldata_time': datetime.now().strftime(
+                                                                              "%Y-%m-%d %H:%M:%S"),
+                                                                          'chStateCode': 0, 'detailDataFlag': 0,
+                                                                          'chState': 0, 'powerDownFlag': 0, 'n': 0,
+                                                                          'u': 0})
+                else:
+                    AllData.update({'mode': 0, 'T': 0, 'r': 0, 'overOutDataFlag': 0, 'qA': 0, 'tc': 0, 'q': 0,
+                                    'i': 0, 'resultDataFlag': 0, 'chMasterSlaveFlag': 0, 'ta': 0, 'k': 0,
+                                    'celldata_time': datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 'chStateCode': 0,
+                                    'detailDataFlag': 0, 'chState': 0, 'powerDownFlag': 0, 'n': 0, 'u': 0})
 
                 if i["AIRID_id"] is not None:
                     print('AIR:readRealData')
@@ -621,7 +641,10 @@ class socketConnect(object):
                     config.senddata = self.buildCmdMessage(config)
                     config.recvdata = self.sendCmdMessage(config)
                     datadict = self.updateCellRealData(config)
-                    AllData.update(datadict if datadict is not None else {})
+                    AllData.update(datadict if datadict is not None else {'qAIR': 0, 'tAIR': datetime.now().strftime(
+                        "%Y-%m-%d %H:%M:%S")})
+                else:
+                    AllData.update({'qAIR': 0, 'tAIR': datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
 
                 if i["H2ID_id"] is not None:
                     print('H2:readRealData')
@@ -639,7 +662,10 @@ class socketConnect(object):
                     config.senddata = self.buildCmdMessage(config)
                     config.recvdata = self.sendCmdMessage(config)
                     datadict = self.updateCellRealData(config)
-                    AllData.update(datadict if datadict is not None else {})
+                    AllData.update(datadict if datadict is not None else {'qH2': 0, 'tH2': datetime.now().strftime(
+                        "%Y-%m-%d %H:%M:%S")})
+                else:
+                    AllData.update({'qH2': 0, 'tH2': datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
 
                 if i["N2ID_id"] is not None:
                     print('N2:readRealData')
@@ -657,10 +683,13 @@ class socketConnect(object):
                     config.senddata = self.buildCmdMessage(config)
                     config.recvdata = self.sendCmdMessage(config)
                     datadict = self.updateCellRealData(config)
-                    AllData.update(datadict if datadict is not None else {})
+                    AllData.update(datadict if datadict is not None else {'qN2': 0, 'tN2': datetime.now().strftime(
+                        "%Y-%m-%d %H:%M:%S")})
+                else:
+                    AllData.update({'qN2': 0, 'tN2': datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
 
                 if i["CH4ID_id"] is not None:
-                    print('CH4:readRealData')
+                    print('CH4:readRealDsata')
                     COM = db.getGasCOM('CH4', i)[0]
                     config.setConfig(type='gas',
                                      cellid=i['cellID_id'],
@@ -673,9 +702,13 @@ class socketConnect(object):
                                      gastype="CH4"
                                      )
                     config.senddata = self.buildCmdMessage(config)
+                    print(config.senddata)
                     config.recvdata = self.sendCmdMessage(config)
                     datadict = self.updateCellRealData(config)
-                    AllData.update(datadict if datadict is not None else {})
+                    AllData.update(datadict if datadict is not None else {'qCH4': 0, 'tCH4': datetime.now().strftime(
+                        "%Y-%m-%d %H:%M:%S")})
+                else:
+                    AllData.update({'qCH4': 0, 'tCH4': datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
 
                 if i["CO2ID_id"] is not None:
                     print('CO2:readRealData')
@@ -693,7 +726,10 @@ class socketConnect(object):
                     config.senddata = self.buildCmdMessage(config)
                     config.recvdata = self.sendCmdMessage(config)
                     datadict = self.updateCellRealData(config)
-                    AllData.update(datadict if datadict is not None else {})
+                    AllData.update(datadict if datadict is not None else {'qCO2': 0, 'tCO2': datetime.now().strftime(
+                        "%Y-%m-%d %H:%M:%S")})
+                else:
+                    AllData.update({'qCO2': 0, 'tCO2': datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
 
                 if i["H2OID_id"] is not None:
                     print('H2O:readRealData')
@@ -711,7 +747,10 @@ class socketConnect(object):
                     config.senddata = self.buildCmdMessage(config)
                     config.recvdata = self.sendCmdMessage(config)
                     datadict = self.updateCellRealData(config)
-                    AllData.update(datadict if datadict is not None else {})
+                    AllData.update(datadict if datadict is not None else {'qH2O': 0, 'tH2O': datetime.now().strftime(
+                        "%Y-%m-%d %H:%M:%S")})
+                else:
+                    AllData.update({'qH2O': 0, 'tH2O': datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
 
                 if i["ovenID_id"] is not None:
                     print('oven:readRealData')
@@ -728,7 +767,10 @@ class socketConnect(object):
                     config.senddata = self.buildCmdMessage(config)
                     config.recvdata = self.sendCmdMessage(config)
                     datadict = self.updateCellRealData(config)
-                    AllData.update(datadict if datadict is not None else {})
+                    AllData.update(datadict if datadict is not None else {'T0': 0, 'tT0': datetime.now().strftime(
+                        "%Y-%m-%d %H:%M:%S")})
+                else:
+                    AllData.update({'T0': 0, 'tT0': datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
 
                 if i["wdjID_id"] is not None:
                     print('wdj:readRealData')
@@ -745,12 +787,27 @@ class socketConnect(object):
                     config.senddata = self.buildCmdMessage(config)
                     config.recvdata = self.sendCmdMessage(config)
                     datadict = self.updateCellRealData(config)
-                    AllData.update(datadict if datadict is not None else {})
-                testid = db.getTestIDfromCell(i["cellID_id"])[0]["testID_id"]
+                    AllData.update(datadict if datadict is not None else {'T1': 0, 'tT1': datetime.now().strftime(
+                        "%Y-%m-%d %H:%M:%S"), 'T2': 0, 'tT2': datetime.now().strftime(
+                        "%Y-%m-%d %H:%M:%S"), 'T3': 0, 'tT3': datetime.now().strftime(
+                        "%Y-%m-%d %H:%M:%S"), 'T4': 0, 'tT4': datetime.now().strftime(
+                        "%Y-%m-%d %H:%M:%S")})
+                else:
+                    AllData.update({'T1': 0, 'tT1': datetime.now().strftime(
+                        "%Y-%m-%d %H:%M:%S"), 'T2': 0, 'tT2': datetime.now().strftime(
+                        "%Y-%m-%d %H:%M:%S"), 'T3': 0, 'tT3': datetime.now().strftime(
+                        "%Y-%m-%d %H:%M:%S"), 'T4': 0, 'tT4': datetime.now().strftime(
+                        "%Y-%m-%d %H:%M:%S")})
+                if i["cellID_id"] is not None:
+                    testid = db.getTestIDfromCell(i["cellID_id"])[0]["testID_id"]
+                else:
+                    testid = None
                 AllData.update({
                     "bigTestID_id": i["id"],
                     "testID_id": testid,
                 })
+                print('..................update history........................')
+                print(AllData)
                 self.insertHistoryData(AllData)
 
     def updateCellBoxState(self, config):
@@ -759,18 +816,26 @@ class socketConnect(object):
         cellid = config.cellid
         data = config.recvdata
         DataDict = {}
-
+        if data is None:
+            print("update: recv data is None!")
+            return None
         if newstate == 'start':
             if len(data) == 46:
                 if data[7] == 0x06:
                     DataDict['currState'] = 'start'
                     db.updateCellRealData(cellid, DataDict)
+                else:
+                    print("update cell state: wrong command number(data[7]==0x06)")
         elif newstate == 'pause':
             if len(data) == 46:
                 if data[7] == 0x08:
                     if (data[8] == 0) and (data[9] == 0):
                         DataDict['currState'] = 'pause'
                         db.updateCellRealData(cellid, DataDict)
+                    else:
+                        print("update cell state: wrong !(data[8] == 0) and (data[9] == 0)")
+                else:
+                    print("update cell state: wrong command number(data[7]==0x08)")
         elif newstate == 'resume':
             if len(data) == 46:
                 if data[7] == 0x08:
@@ -778,16 +843,29 @@ class socketConnect(object):
                         DataDict['currState'] = 'start'
                         DataDict['nextState'] = 'start'
                         db.updateCellRealData(cellid, DataDict)
+                    else:
+                        print("update cell state: wrong !(data[8] == 0) and (data[9] == 0)")
+                else:
+                    print("update cell state: wrong command number(data[7]==0x08)")
         elif newstate == 'stop':
             if len(data) == 46:
                 if data[7] == 0x07:
                     if (data[8] == 0) and (data[9] == 0):
                         DataDict['currState'] = 'stop'
                         db.updateCellRealData(cellid, DataDict)
+                    else:
+                        print("update cell state: wrong !(data[8] == 0) and (data[9] == 0)")
+                else:
+                    print("update cell state: wrong command number(data[7]==0x07)")
+        else:
+            print("update cell state: wrong! unknown newstate(config.cmd)")
 
     def updateGasState(self, config, gastype, MFCid):
         db = dbClass()
         data = config.recvdata
+        if data is None:
+            print("update: recv data is None!")
+            return None
         if ((data[0] == ord(config.addr)) and data[-1] == 0x0D):  # 帧头帧尾校验
             data = data.decode()
             data = data.split()
@@ -796,6 +874,9 @@ class socketConnect(object):
                 DataDict['currState'] = config.plan
                 db.updateGasTable(gastype, DataDict, MFCid)
                 return DataDict
+            else:
+                print("update gas state: wrong frame")
+                return None
         else:
             print("update gas state: wrong frame")
             return None
@@ -803,6 +884,9 @@ class socketConnect(object):
     def updateOvenState(self, config, Ovenid):
         db = dbClass()
         data = config.recvdata
+        if data is None:
+            print("update: recv data is None!")
+            return None
         if len(data) == 10:  # 帧长校验
             DataDict = {}
             DataDict['currState'] = config.cmd
@@ -816,15 +900,20 @@ class socketConnect(object):
         db = dbClass()
         cmd = config.cmd
         data = config.recvdata
+        if data is None:
+            print("update: recv data is None!")
+            return None
         cellid = config.cellid
         boxid = config.boxid
         chnnum = config.chnnum
-
+        print("update cell data................type:" + str(config.type) + ".....cmd:" + str(cmd))
         if config.type == 'box':
             if cmd == 'read':
                 if ((data[0] == 0xAA) and (data[1] == 0x55) and (data[-1] == 0xAA) and (data[-2] == 0x55)):  # 帧头帧尾校验
                     if ((len(data) == data[2] + (data[3] << 8) + 6) and len(data) == 3471):  # 数据长度校验
                         if data[6] == boxid:
+                            # if data[6] == 0x00:
+                            print("update cell data.........box success")
                             DataDict = {}
                             i = chnnum
                             DataDict['chState'] = data[11 + i * 54 + 1]
@@ -860,11 +949,18 @@ class socketConnect(object):
                             DataDict['celldata_time'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                             db.updateCellRealData(cellid, DataDict)
                             return DataDict
-
-            elif cmd == 'readDetailData':
-                pass
-            elif cmd == 'readResultData':
-                pass
+                        else:
+                            print("update real data_box: wrong! unknown box_id(config.boxid)")
+                            return None
+                    else:
+                        print("update real data_box: wrong data length")
+                        return None
+                else:
+                    print("update real data_box: wrong frame")
+                    return None
+            else:
+                print("update real data_box: wrong! unknown cmd(config.cmd)")
+                return None
         elif config.type == "gas":
             if ((data[0] == ord(config.addr)) and data[-1] == 0x0D):  # 帧头帧尾校验
                 data = data.decode()
@@ -901,6 +997,12 @@ class socketConnect(object):
                         GasDataDict['tH2O'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                         db.updateCellRealData(cellid, GasDataDict)
                         return GasDataDict
+                    else:
+                        print("update_cell_data_gas: unknown gastype")
+                        return None
+                else:
+                    print("update_cell_data_gas: wrong data length")
+                    return None
             else:
                 print("update_cell_data_gas: wrong frame")
                 return None
@@ -910,7 +1012,7 @@ class socketConnect(object):
                 SV = data[2] + (data[3] << 8)
                 MV = data[4] + (data[5] << 8)
                 value = data[6] + (data[7] << 8)
-                checksum = PV + SV + MV + value + self.addr
+                checksum = PV + SV + MV + value + config.addr
                 checksumLO = checksum & 0xff
                 checksumHI = (checksum & 0xff00) >> 8
                 if data[8] == checksumLO and data[9] == checksumHI:
@@ -934,7 +1036,7 @@ class socketConnect(object):
                     print("update_cell_data_oven: wrong frame")
                     return None
             else:
-                print("update_cell_data_oven: wrong frame")
+                print("update_cell_data_oven: data length")
                 return None
         elif config.type == "wdj":
             if ((data[0] == 1) and (data[1] == 0x03) and (data[2] == 0x10)):  # 帧头帧尾校验
@@ -950,6 +1052,9 @@ class socketConnect(object):
                     wdjDataDict['tT4'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                     db.updateCellRealData(cellid, wdjDataDict)
                     return wdjDataDict
+                else:
+                    print("update_cell_data_gas: wrong data length")
+                    return None
             else:
                 print("update_cell_data_wdj: wrong frame")
                 return None

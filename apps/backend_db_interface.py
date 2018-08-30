@@ -23,6 +23,7 @@ def get_current_scheme_interface(bid, cid):
     sid = testInfoTable.objects.filter(id=tid.id)[0].planID
     steps = cellPlanDetailTable.objects.filter(planID=sid).order_by("step")
     step_list = []
+    print(steps)
     if len(steps) != 0:
         for j in steps:
             step = {
@@ -34,11 +35,12 @@ def get_current_scheme_interface(bid, cid):
                 "U_LM": float(j.uTH) / 1000,
                 "I_LM": float(j.iTH) / 1000,
             }
-        step_list.append(step)
+            step_list.append(step)
     data = {
         "schemeID": int(sid.id),
         "steps": step_list
     }
+    print(data)
     return data
 
 
@@ -50,7 +52,7 @@ def get_oven_status_interface():
             "ID": i.ID,
             "curr": i.currState,
             "next": i.nextState,
-            "PlanID": i.ovenPlanID.id
+            "PlanID": i.ovenPlanID.id if i.ovenPlanID is not None else None
         }
         bt = BigTestInfoTable.objects.filter(ovenID=i.ID, completeFlag=0)
         if len(bt) == 0:
@@ -182,11 +184,11 @@ def get_old_test_scheme_interface():
             step = {
                 "step": j.step,
                 "LoadMode": j.mode,
-                "U": float(j.u) / 1000,
-                "I": float(j.i) / 1000,
-                "t_LM": float(j.tTH) / 1000,
-                "U_LM": float(j.uTH) / 1000,
-                "I_LM": float(j.iTH) / 1000,
+                "U": float(j.u) / 1000 if j.u is not None else 0,
+                "I": float(j.i) / 1000 if j.i is not None else 0,
+                "t_LM": float(j.tTH) / 1000 if j.tTH is not None else 0,
+                "U_LM": float(j.uTH) / 1000 if j.uTH is not None else 0,
+                "I_LM": float(j.iTH) / 1000 if j.iTH is not None else 0,
             }
             step_list.append(step)
         scheme = {
@@ -220,11 +222,11 @@ def save_test_scheme_interface(new_scheme):
             step.planID = planinfo
             step.step = 0 if i['step'] is None else int(i['step'])
             step.mode = "" if i['LoadMode'] is None else i['LoadMode']
-            step.i = 0 if i['I'] is None else int(i['I']) * 1000
-            step.u = 0 if i['U'] is None else int(i['U']) * 1000
-            step.iTH = 0 if i['I_LM'] is None else int(i['I_LM']) * 1000
-            step.uTH = 0 if i['U_LM'] is None else int(i['U_LM']) * 1000
-            step.tTH = 0 if i['t_LM'] is None else int(i['t_LM']) * 1000
+            step.i = 0 if i['I'] is None else int(float(i['I']) * 1000)
+            step.u = 0 if i['U'] is None else int(float(i['U']) * 1000)
+            step.iTH = 0 if i['I_LM'] is None else int(float(i['I_LM']) * 1000)
+            step.uTH = 0 if i['U_LM'] is None else int(float(i['U_LM']) * 1000)
+            step.tTH = 0 if i['t_LM'] is None else int(float(i['t_LM']) * 1000)
         except Exception as e:
             print(e)
             print("出错啦 ")
@@ -382,6 +384,7 @@ def get_history_test_data_interface(box_id, cha_id, test_id):
         'Q_CH4': [],
         'Q_Air': [],
         'Q_H2O': [],
+        'T0': [],
         'T1': [],
         'T2': [],
         'T3': [],
@@ -461,21 +464,21 @@ def get_real_time_info_interface(box_id, cha_id):
     except:
         print("boxID:" + str(box_id) + "  chaID:" + str(cha_id) + "  testID:" + str(test_id) + "    不存在实时信息")
         return data
-    data['I'] = float(rt_data.i) / 1000
-    data['U'] = float(rt_data.u) / 1000
-    data['T0'] = float(rt_data.T0)
-    data['T1'] = float(rt_data.T1)
-    data['T2'] = float(rt_data.T2)
-    data['T3'] = float(rt_data.T3)
-    data['T4'] = float(rt_data.T4)
-    data['Q_N2'] = rt_data.qN2
-    data['Q_H2'] = rt_data.qH2
-    data['Q_CO2'] = rt_data.qCO2
-    data['Q_CH4'] = rt_data.qCH4
-    data['Q_Air'] = rt_data.qAIR
-    data['Q_H2O'] = rt_data.qH2O
-    data['q'] = rt_data.q
-    data['k'] = rt_data.n
+    data['I'] = float(rt_data.i) / 1000 if rt_data.i is not None else 0
+    data['U'] = float(rt_data.u) / 1000 if rt_data.u is not None else 0
+    data['T0'] = float(rt_data.T0) if rt_data.T0 is not None else 0
+    data['T1'] = float(rt_data.T1) if rt_data.T1 is not None else 0
+    data['T2'] = float(rt_data.T2) if rt_data.T2 is not None else 0
+    data['T3'] = float(rt_data.T3) if rt_data.T3 is not None else 0
+    data['T4'] = float(rt_data.T4) if rt_data.T4 is not None else 0
+    data['Q_N2'] = float(rt_data.qN2) if rt_data.qN2 is not None else 0
+    data['Q_H2'] = float(rt_data.qH2) if rt_data.qH2 is not None else 0
+    data['Q_CO2'] = float(rt_data.qCO2) if rt_data.qCO2 is not None else 0
+    data['Q_CH4'] = float(rt_data.qCH4) if rt_data.qCH4 is not None else 0
+    data['Q_Air'] = float(rt_data.qAIR) if rt_data.qAIR is not None else 0
+    data['Q_H2O'] = float(rt_data.qH2O) if rt_data.qH2O is not None else 0
+    data['q'] = float(rt_data.q) if rt_data.q is not None else 0
+    data['k'] = rt_data.n if rt_data.k is not None else 0
     return data
 
 
@@ -501,24 +504,24 @@ def start_channel_interface(box_id, cha_id, scheme_id):
     if len(cellid) == 0:
         # print("当前通道下找不到电池")
         print("startchannel:当前通道还未创建realdatatable")
-        return False
+        return "启动失败：当前通道还未启动电炉"
     cellid = cellid[0].cellID
     bigtest = BigTestInfoTable.objects.filter(cellID=cellid, boxID=box_id, chnNum=cha_id, completeFlag=0).order_by(
         "startDate").reverse()
     if len(bigtest) == 0:
         print("startchannel:还没有创建bigtest!")
-        return False
+        return "启动失败：当前通道还未启动电炉"
     bigtest = bigtest[0]
     try:
         planid = cellPlanTable.objects.get(id=scheme_id)
     except:
         print("startchannel:找不到测试方案！")
-        return False
+        return "启动失败：找不到该测试方案"
     try:
         box_id = boxDeviceTable.objects.get(ID=box_id)
     except:
         print("startchannel:没有该box")
-        return False
+        return "启动失败：找不到该负载箱号"
     testid = testInfoTable(boxID=box_id, chnNum=cha_id, bigTestID=bigtest, planID=planid, cellID=cellid, completeFlag=0,
                            startDate=datetime.datetime.now())
     testid.save()
@@ -528,40 +531,43 @@ def start_channel_interface(box_id, cha_id, scheme_id):
     if len(x) == 0:
         print("启动通道：还未创建realdatatable！")
         testid.delete()
+        return "启动失败：当前通道还未启动电炉"
     elif len(x) > 1:
         print("启动通道：不止一条realdatatable")
         x.update(cellID=cellid, boxID=box_id, chnNum=cha_id, testID=testid, totalStepN=len(steps), currState="stop",
                  nextState="start")
+        return "启动成功"
     else:
         x.update(boxID=box_id, chnNum=cha_id, testID=testid, totalStepN=len(steps), currState="stop", nextState="start")
+        return "启动成功"
 
 
 def stop_channel_interface(box_id, cha_id):
     tid = testInfoTable.objects.filter(boxID=box_id, chnNum=cha_id, completeFlag=0)
     if len(tid) == 0:
         print("stop通道：未查询到该通道的testID！")
-        return False
+        return "停止失败"
     crt = cellTestRealDataTable.objects.filter(boxID=box_id, chnNum=cha_id, testID=tid[0], bigTestID=tid[0].bigTestID)
     if len(crt) == 0:
         print("stop通道：还未创建realdatatable！")
-        return False
+        return "停止失败"
     elif len(crt) > 1:
         print("stop通道：多个realdatatable！")
-        return False
+        return "停止失败"
     if crt[0].currState == "stop":
         print("stop通道：已停止！")
         if crt[0].testID is not None:
             testInfoTable.objects.filter(id=crt[0].testID.id).update(completeFlag=1, endDate=datetime.datetime.now())
             crt.update(nextState="stop", testID=None)
-        return True
-    if crt.nextState == "stop":
+        return "已经停止"
+    if crt[0].nextState == "stop":
         print("stop通道：正尝试停止！")
-        return False
+        return "正在尝试停止......"
 
     if crt[0].testID is not None:
         testInfoTable.objects.filter(id=crt[0].testID.id).update(completeFlag=1, endDate=datetime.datetime.now())
         crt.update(nextState="stop", testID=None)
-    return True
+    return "停止成功"
 
     # testid = testInfoTable.objects.filter(boxID=box_id, chnNum=cha_id)
     # if len(testid) == 0:
@@ -580,24 +586,24 @@ def pause_channel_interface(box_id, cha_id):
     testid = testInfoTable.objects.filter(boxID=box_id, chnNum=cha_id, completeFlag=0)
     if len(testid) == 0:
         print("pausechannel:testid not found")
-        return 0
+        return "暂停失败"
     elif len(testid) > 1:
         print("pausechannel:当前通道有多条测试记录，选取最后一条")
     testid = testid.order_by("id").reverse()[0]
     rows = cellTestRealDataTable.objects.filter(testID=testid, currState="start").update(nextState="pause")
-    return rows
+    return "暂停成功"
 
 
 def continue_channel_interface(box_id, cha_id):
     testid = testInfoTable.objects.filter(boxID=box_id, chnNum=cha_id, completeFlag=0)
     if len(testid) == 0:
         print("continuechannel:testid not found")
-        return 0
+        return "继续通道失败"
     elif len(testid) > 1:
         print("continuechannel:当前通道有多条测试记录，选取最后一条")
     testid = testid.order_by("id").reverse()[0]
     rows = cellTestRealDataTable.objects.filter(testID=testid, currState="pause").update(nextState="resume")
-    return rows
+    return "继续通道成功"
 
 
 # def make_test_interface(box_id, cha_id, scheme_id, oven_scheme_id):
@@ -627,18 +633,18 @@ def start_oven_interface(box_id, cha_id, oven_id, oven_scheme_id):
         ovenid = ovenDeviceTable.objects.get(ID=oven_id)
     except:
         print("startoven:没有该电炉")
-        return False
+        return "启动电炉失败：没有该电炉"
     if ovenid.currState == "start":
         print("startoven:该电炉已启动")
-        return False
+        return "启动电炉失败：该电炉已启动"
     if ovenid.nextState == "start":
         print("startoven:该电炉正在尝试启动")
-        return False
+        return "启动电炉失败：正在尝试启动"
     try:
         ovenplanid = ovenPlanTable.objects.get(id=oven_scheme_id)
     except:
         print("startoven:没有该电炉测试方案")
-        return False
+        return "启动电炉失败：没有该测试方案"
     cell = cellDeviceTable.objects.filter(mT0ID=ovenid)
     if len(cell) == 0:
         print("startoven:该电炉里面没有电池！")
@@ -650,9 +656,11 @@ def start_oven_interface(box_id, cha_id, oven_id, oven_scheme_id):
             crt.save()
         else:
             crt.update(bigTestID=bt, currState="stop", nextState="stop")
+        # return "启动成功！警告：该电炉中没有电池"
     for i in cell:
         bt = BigTestInfoTable(cellID=i, boxID=i.boxID, chnNum=i.chnNum, H2ID=i.mH2ID, N2ID=i.mN2ID, CO2ID=i.mCO2ID,
-                              CH4ID=i.mCH4ID, AIRID=i.mAIRID, H2OID=i.mH2OID, ovenID=ovenid, ovenPlanID=ovenplanid,wdjID=i.mT1ID,
+                              CH4ID=i.mCH4ID, AIRID=i.mAIRID, H2OID=i.mH2OID, ovenID=ovenid, ovenPlanID=ovenplanid,
+                              wdjID=i.mT1ID,
                               completeFlag=0)
         bt.save()
         crt = cellTestRealDataTable.objects.filter(boxID=i.boxID, chnNum=i.chnNum)
@@ -664,7 +672,7 @@ def start_oven_interface(box_id, cha_id, oven_id, oven_scheme_id):
             crt.update(cellID=i, bigTestID=bt, currState="stop", nextState="stop")
     ovenDeviceTable.objects.filter(ID=oven_id, currState="stop").update(ovenPlanID=ovenplanid, nextState="start")
     print("startoven:成功！")
-    return True
+    return "启动电炉成功"
 
 
 def stop_oven_interface(box_id, cha_id, oven_id, oven_scheme_id):
@@ -675,23 +683,23 @@ def stop_oven_interface(box_id, cha_id, oven_id, oven_scheme_id):
         ovenid = ovenDeviceTable.objects.get(ID=oven_id)
     except:
         print("stopoven:没有该电炉")
-        return False
+        return "停止电炉失败：没有该电炉"
     if ovenid.currState == "stop" and ovenid.nextState == "stop":
         print("stopoven:该电炉已停止")
-        return False
+        return "停止电炉失败：该电炉已停止"
     if ovenid.nextState == "stop":
         print("stopoven:该电炉正尝试停止")
-        return False
+        return "正尝试停止......"
     cell = cellDeviceTable.objects.filter(mT0ID=ovenid)
     bt = BigTestInfoTable.objects.filter(ovenID=ovenid, completeFlag=0)
     if len(bt) == 1 and bt[0].cellID is None:
         cellTestRealDataTable.objects.get(bigTestID=bt[0]).delete()
     if len(testInfoTable.objects.filter(bigTestID__in=bt, completeFlag=0)) != 0:
         print("stopoven:该父测试下还有未完成的子测试，结束失败")
-        return False
+        return "停止电炉失败：该电炉内部还有电池正在测试！"
     ovenDeviceTable.objects.filter(ID=oven_id).update(nextState="stop")
     bt.update(completeFlag=1, endDate=datetime.datetime.now())
-    return True
+    return "停止电炉成功！"
 
 
 def pause_oven_interface(box_id, cha_id, oven_id, oven_scheme_id):
@@ -702,21 +710,48 @@ def pause_oven_interface(box_id, cha_id, oven_id, oven_scheme_id):
         ovenid = ovenDeviceTable.objects.get(ID=oven_id)
     except:
         print("pauseoven:没有该电炉")
-        return False
+        return "暂停电炉失败：没有该电炉"
     if ovenid.currState == "pause":
         print("pasueoven:该电炉已暂停")
-        return False
+        return "暂停电炉失败：该电炉已暂停"
+    if ovenid.currState == "stop":
+        print("pasueoven:该电炉已停止")
+        return "暂停电炉失败：该电炉已停止"
     if ovenid.nextState == "pause":
         print("pasueoven:该电炉正尝试暂停")
-        return False
+        return "正在尝试暂停......"
     cell = cellDeviceTable.objects.filter(mT0ID=ovenid)
     ovenDeviceTable.objects.filter(ID=oven_id).update(nextState="pause")
     bt = BigTestInfoTable.objects.filter(ovenID=ovenid, completeFlag=0)
-    return True
+    return "暂停电炉成功！"
+
+
+def resume_oven_interface(box_id, cha_id, oven_id, oven_scheme_id):
+    # 创建父测试
+    print("oid" + str(oven_id))
+    print("opid" + str(oven_scheme_id))
+    try:
+        ovenid = ovenDeviceTable.objects.get(ID=oven_id)
+    except:
+        print("resumeoven:没有该电炉")
+        return "继续电炉失败：没有该电炉"
+    if ovenid.currState == "start":
+        print("resumeoven:该电炉已启动")
+        return "继续电炉失败：该电炉已启动"
+    if ovenid.currState == "stop":
+        print("resumeoven:该电炉已停止")
+        return "继续电炉失败：该电炉已停止"
+    if ovenid.nextState == "start":
+        print("pasueoven:该电炉正尝试启动")
+        return "正在尝试启动......"
+    cell = cellDeviceTable.objects.filter(mT0ID=ovenid)
+    ovenDeviceTable.objects.filter(ID=oven_id).update(nextState="start")
+    bt = BigTestInfoTable.objects.filter(ovenID=ovenid, completeFlag=0)
+    return "操作成功！"
 
 
 def get_gas_info_interface(box_id, chn_id):
-    testid = BigTestInfoTable.objects.filter(boxID=box_id, chnNum=chn_id,completeFlag=0)
+    testid = BigTestInfoTable.objects.filter(boxID=box_id, chnNum=chn_id, completeFlag=0)
     data = {'H2': -1, 'N2': -1, 'H2O': -1, 'Air': -1, 'CH4': -1, 'CO2': -1}
     if len(testid) == 0:
         print("getgasinfo:没有气体数据")
@@ -740,7 +775,7 @@ def get_gas_info_interface(box_id, chn_id):
 
 
 def set_gas_interface(box_id, chn_id, data):
-    testid = BigTestInfoTable.objects.filter(boxID=box_id, chnNum=chn_id,completeFlag=0)
+    testid = BigTestInfoTable.objects.filter(boxID=box_id, chnNum=chn_id, completeFlag=0)
     if len(testid) == 0:
         print("setgas:没有气体数据")
         return False

@@ -208,6 +208,7 @@ function save_scheme() {
         async: false, //同步执行
         success: function (data) {
             show_old_scheme_table();
+            alert(data.Message);
         }
     });
 }
@@ -222,6 +223,7 @@ function save_oven_scheme() {
         async: false, //同步执行
         success: function (data) {
             show_old_oven_scheme_table();
+            alert(data.Message);
         }
     });
 }
@@ -674,6 +676,7 @@ function start_channel() {
             dataType: 'json',
             async: false, //同步执行
             success: function (data) {
+                alert(data.Message);
                 //window.location.href = "/monitor/";
             }
         }
@@ -713,7 +716,7 @@ function start_oven() {
             dataType: 'json',
             async: false, //同步执行
             success: function (data) {
-
+                alert(data.Message);
             }
         }
     )
@@ -770,6 +773,7 @@ function set_gas() {
         async: false, //同步执行
         success: function (data) {
             show_gas_table();
+            alert(data.Message);
         }
     })
 }
@@ -788,7 +792,7 @@ function stop_oven() {
             dataType: 'json',
             async: false, //同步执行
             success: function (data) {
-
+                alert(data.Message);
             }
         }
     )
@@ -807,7 +811,26 @@ function pause_oven() {
             dataType: 'json',
             async: false, //同步执行
             success: function (data) {
+                alert(data.Message);
+            }
+        }
+    )
+}
 
+function resume_oven() {
+    var bid = parseInt($('#box_num_selected option:selected').val());
+    var cid = parseInt($('#channel_num_selected option:selected').val());
+    var oid = parseInt($('#oven_num_selected option:selected').val());
+    var osid = parseInt($('#oven_scheme_num_selected option:selected').val());
+    var data = {box: bid, channel: cid, oven: oid, oplan: osid};
+    $.ajax({
+            url: "/control/resume_oven/",
+            type: "post",
+            data: JSON.stringify(data),
+            dataType: 'json',
+            async: false, //同步执行
+            success: function (data) {
+                alert(data.Message);
             }
         }
     )

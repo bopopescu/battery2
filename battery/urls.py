@@ -23,7 +23,7 @@ from apps.views import IndexView, monitor, control, testline_status, testline_in
     get_testdata_from_start, get_testdata_real_time, get_test_scheme, get_old_scheme, delete_old_scheme, save_scheme, \
     get_b_c_num, start_channel, pause_channel, stop_channel, continue_channel, get_old_oven_scheme, \
     delete_old_oven_scheme, save_oven_scheme, make_test, start_oven, get_gas_info, set_gas, gas_control, oven_control, \
-    stop_oven, pause_oven, oven_status, cells_info,tests_info
+    stop_oven, pause_oven, oven_status, cells_info, tests_info, resume_oven
 from django.views.generic import TemplateView
 
 urlpatterns = [
@@ -61,6 +61,7 @@ urlpatterns = [
     url(r'^control/start_oven/$', start_oven, name="start_oven"),
     url(r'^control/stop_oven/$', stop_oven, name="stop_oven"),
     url(r'^control/pause_oven/$', pause_oven, name="pause_oven"),
+    url(r'^control/resume_oven/$', resume_oven, name="resume_oven"),
     url(r'^control/get_gas_info/(\d+)/(\d+)/$', get_gas_info, name="get_gas_info"),
     url(r'^control/set_gas/(\d+)/(\d+)/$', set_gas, name="set_gas"),
     url(r'^gas_control/$', gas_control, name="gas_control"),

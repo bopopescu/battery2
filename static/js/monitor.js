@@ -6,6 +6,7 @@
 var myChart = echarts.init(document.getElementById('U_I_t_chart'));
 var myChart1 = echarts.init(document.getElementById('Q_t_chart'));
 var myChart2 = echarts.init(document.getElementById('T_t_chart'));
+var myChart3 = echarts.init(document.getElementById('T0_t_chart'));
 
 var intID1;
 var intID2;
@@ -18,9 +19,11 @@ var Q = {
     Q_CH4: [],
     Q_N2: [],
     Q_CO2: [],
-    Q_Air: []
+    Q_Air: [],
+    Q_H2O: []
 };
 var T = {
+    T0: [],
     T1: [],
     T2: [],
     T3: [],
@@ -41,6 +44,10 @@ function set_interval() {
         intID1 = setInterval(get_realtime_data, refresh);
         intID2 = setInterval(show_brief_info, refresh);
         intID3 = setInterval(show_testline_status, refresh);
+        alert("设置成功，开始刷新");
+    }
+    else {
+        alert("设置失败");
     }
 }
 
@@ -48,6 +55,7 @@ function stop_refresh() {
     clearInterval(intID1);
     clearInterval(intID2);
     clearInterval(intID3);
+    alert("停止成功");
 }
 
 $(document).ready(function () {
@@ -68,6 +76,7 @@ $(document).ready(function () {
             myChart.resize();
             myChart1.resize();
             myChart2.resize();
+            myChart3.resize();
         };
     }
 )
@@ -220,6 +229,10 @@ function refresh_page() {
         intID2 = setInterval(show_brief_info, refresh);
         intID3 = setInterval(show_testline_status, refresh);
         show_test_scheme();
+        alert("成功");
+    }
+    else {
+        alert("失败");
     }
 }
 
@@ -235,6 +248,7 @@ function continue_testline() {
                 dataType: 'json',
                 async: false, //同步执行
                 success: function (data) {
+                    alert(data.Message);
                 }
             }
         )
@@ -252,6 +266,7 @@ function pause_testline() {
                 dataType: 'json',
                 async: false, //同步执行
                 success: function (data) {
+                    alert(data.Message);
                 }
             }
         )
@@ -269,6 +284,7 @@ function stop_testline() {
                 dataType: 'json',
                 async: false, //同步执行
                 success: function (data) {
+                    alert(data.Message);
                 }
             }
         )
@@ -293,6 +309,8 @@ function show_chart() {
                 Q.Q_Air = data.Q_Air;
                 Q.Q_N2 = data.Q_N2;
                 Q.Q_H2 = data.Q_H2;
+                Q.Q_H2O = data.Q_H2O;
+                T.T0 = data.T0;
                 T.T1 = data.T1;
                 T.T2 = data.T2;
                 T.T3 = data.T3;
@@ -365,7 +383,7 @@ function show_chart() {
                 };
                 var option_Q = {
                     legend: {
-                        data: ["氢气", "氮气", "甲烷", "二氧化碳", "空气"]
+                        data: ["氢气", "氮气", "甲烷", "二氧化碳", "空气", "水蒸汽"]
                     },
                     dataZoom: [{
                         type: 'slider',
@@ -427,11 +445,17 @@ function show_chart() {
                         showSymbol: false,
                         hoverAnimation: false,
                         data: Q.Q_CO2,
+                    }, {
+                        name: '水蒸汽',
+                        type: 'line',
+                        showSymbol: false,
+                        hoverAnimation: false,
+                        data: Q.Q_H2O,
                     }]
                 };
                 var option_T = {
                     legend: {
-                        data: ["温度1", "温度2", "温度3", "温度4"]
+                        data: ["测温点1", "测温点2", "测温点3", "测温点4"]
                     },
                     dataZoom: [{
                         type: 'slider',
@@ -463,34 +487,76 @@ function show_chart() {
                         boundaryGap: [0, '10%'],
                     },
                     series: [{
-                        name: '温度1',
+                        name: '测温点1',
                         type: 'line',
                         showSymbol: false,
                         hoverAnimation: false,
                         data: T.T1,
                     }, {
-                        name: '温度2',
+                        name: '测温点2',
                         type: 'line',
                         showSymbol: false,
                         hoverAnimation: false,
                         data: T.T2,
                     }, {
-                        name: '温度3',
+                        name: '测温点3',
                         type: 'line',
                         showSymbol: false,
                         hoverAnimation: false,
                         data: T.T3,
                     }, {
-                        name: '温度4',
+                        name: '测温点4',
                         type: 'line',
                         showSymbol: false,
                         hoverAnimation: false,
                         data: T.T4,
                     }]
                 };
+                var option_T0 = {
+                    legend: {
+                        data: ["控温点"]
+                    },
+                    dataZoom: [{
+                        type: 'slider',
+                        show: true,
+                        start: 0,
+                        end: 100
+                    },
+                    ],
+                    xAxis: {
+                        type: "time",
+                        splitLine: {
+                            lineStyle: {
+                                type: 'dashed'
+                            }
+                        },
+                    },
+                    yAxis: {
+                        name: '温度/°C',
+                        type: 'value',
+                        nameTextStyle: {
+                            fontSize: 14
+                        },
+                        splitLine: {
+                            lineStyle: {
+                                type: 'dashed'
+                            }
+                        },
+                        position: 'left',
+                        boundaryGap: [0, '10%'],
+                    },
+                    series: [{
+                        name: '控温点',
+                        type: 'line',
+                        showSymbol: false,
+                        hoverAnimation: false,
+                        data: T.T0,
+                    }]
+                };
                 myChart.setOption(option_U_I);
                 myChart1.setOption(option_Q);
                 myChart2.setOption(option_T);
+                myChart3.setOption(option_T0);
 
             }
         });
@@ -521,6 +587,10 @@ function get_realtime_data() {
                     Q.Q_N2.push(data.Q_N2);
                 if (data.Q_H2 != Q.Q_H2[Q.Q_H2.length - 1])
                     Q.Q_H2.push(data.Q_H2);
+                if (data.Q_H2O != Q.Q_H2O[Q.Q_H2O.length - 1])
+                    Q.Q_H2O.push(data.Q_H2O);
+                if (data.T0 != T.T0[T.T0.length - 1])
+                    T.T0.push(data.T0);
                 if (data.T1 != T.T1[T.T1.length - 1])
                     T.T1.push(data.T1);
                 if (data.T2 != T.T2[T.T2.length - 1])
@@ -547,6 +617,8 @@ function get_realtime_data() {
                         data: Q.Q_CH4
                     }, {
                         data: Q.Q_CO2
+                    }, {
+                        data: Q.Q_H2O
                     }]
                 });
                 myChart2.setOption({
@@ -558,6 +630,11 @@ function get_realtime_data() {
                         data: T.T3
                     }, {
                         data: T.T4
+                    }]
+                });
+                myChart3.setOption({
+                    series: [{
+                        data: T.T0
                     }]
                 });
             }
@@ -603,19 +680,19 @@ function get_status_success(data) {
     //console.log(data);
     var status = document.getElementById("testline_status");
     if (data.testline_status == "start") {
-        status.setAttribute("class", "badge badge-success");
+        status.setAttribute("class", "label label-success");
         status.innerText = "正在运行";
     }
     else if (data.testline_status == "pause") {
-        status.setAttribute("class", "badge badge-warning");
+        status.setAttribute("class", "label label-warning");
         status.innerText = "暂停中";
     }
     else if (data.testline_status == "stop") {
-        status.setAttribute("class", "badge badge-danger");
+        status.setAttribute("class", "label label-danger");
         status.innerText = "已停止";
     }
     else {
-        status.setAttribute("class", "badge badge-secondary");
+        status.setAttribute("class", "label label-default");
         status.innerText = "未知";
     }
 }

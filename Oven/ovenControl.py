@@ -131,8 +131,8 @@ class Oven(object):
         for i in range(0, len(steps)):
             step = steps[i]
             self.sendcmd(self.buildcmd(name="C" + str(i + 1), mode="set", value=step["T"] * 10),
-                         waittime=10)  # 温度有1位小数点
-            self.sendcmd(self.buildcmd(name="t" + str(i + 1), mode="set", value=step["time"]), waittime=10)  # 时间没有小数点
+                         waittime=1)  # 温度有1位小数点
+            self.sendcmd(self.buildcmd(name="t" + str(i + 1), mode="set", value=step["time"]), waittime=1)  # 时间没有小数点
             print("progress:" + str(i + 1) + "/" + str(len(steps)))
 
     def startOven(self):
@@ -167,8 +167,9 @@ if __name__ == "__main__":
     oven = Oven()
     steps = [{"T": 20, "time": 2}, {"T": 200, "time": 3}, {"T": 200, "time": 2}, {"T": 300, "time": 3},
              {"T": 300, "time": 1}, {"T": 20, "time": -121}]
-    oven.setPlan(steps)
-    oven.startOven()
+    # oven.setPlan(steps)
+    # oven.startOven()
+    print(oven.sendcmd(oven.buildcmd("SV/SteP","read")))
     # for keys in oven.valDict:
     #     data = oven.sendcmd(oven.buildcmd(name=keys, mode="read"))
     #     print(keys + ":" + str(data))

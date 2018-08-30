@@ -17,6 +17,7 @@ class dbClass(object):
             with open("db_config.json", 'r') as f:
                 filetext = f.read()
         except Exception as e:
+            print(e)
             raise e
 
         configJson = json.loads(filetext)
@@ -47,9 +48,15 @@ class dbClass(object):
         self.cellTestHistoryDataTable = configJson["cellTestHistoryDataTable"]
 
     def updateCellDeviceTable(self, boxid, chnNum, datadict):
-        dbconnection = pymysql.connect(host=self.host, port=self.port, user=self.user, passwd=self.passwd,
-                                       db=self.db,
-                                       charset="utf8")
+        while True:
+            try:
+                dbconnection = pymysql.connect(host=self.host, port=self.port, user=self.user, passwd=self.passwd,
+                                       db=self.db,charset="utf8")
+                break
+            except Exception as e:
+                print(e)
+                print("cannot connect to mysql, retrying........................")
+
         cursor = dbconnection.cursor()
 
         ROWstr = ''
@@ -80,11 +87,15 @@ class dbClass(object):
         dbconnection.close()
 
     def updateCellDeviceTable_Gas_Temp(self, cellid, datadict):
-        dbconnection = pymysql.connect(host=self.host, port=self.port, user=self.user, passwd=self.passwd,
-                                       db=self.db,
-                                       charset="utf8")
+        while True:
+            try:
+                dbconnection = pymysql.connect(host=self.host, port=self.port, user=self.user, passwd=self.passwd,
+                                       db=self.db,charset="utf8")
+                break
+            except Exception as e:
+                print(e)
+                print("cannot connect to mysql, retrying........................")
         cursor = dbconnection.cursor()
-
         ROWstr = ''
 
         # UPDATE table_name SET field1=new-value1, field2=new-value2 WHERE runoob_id=3;
@@ -112,8 +123,14 @@ class dbClass(object):
         dbconnection.close()
 
     def executeGetSQL(self, sql, keys):
-        dbconnection = pymysql.connect(host=self.host, port=self.port, user=self.user, passwd=self.passwd,
-                                       db=self.db, charset="utf8")
+        while True:
+            try:
+                dbconnection = pymysql.connect(host=self.host, port=self.port, user=self.user, passwd=self.passwd,
+                                       db=self.db,charset="utf8")
+                break
+            except Exception as e:
+                print(e)
+                print("cannot connect to mysql, retrying........................")
         cursor = dbconnection.cursor()
         r_list = []
         try:
@@ -142,13 +159,12 @@ class dbClass(object):
 
     def getCellsTestPlan(self, cell):
         keys = ["planID_id", ]
-        sql = 'SELECT planID_id FROM ' + self.testInfoTable + ' WHERE id=' + cell["testID_id"]
+        sql = 'SELECT planID_id FROM ' + self.testInfoTable + ' WHERE id=' + str(cell["testID_id"])
         result = self.executeGetSQL(sql, keys)
         keys = ["id", "planID_id", "step", "mode", "i", "u", "r", "p", "n", "nStart", "nStop", "nTarget", "tTH", "iTH",
                 "uTH", "qTH"]
         keystr = ",".join(keys)
-        sql = 'SELECT ' + keystr + ' FROM ' + self.cellPlanDetailTable + ' WHERE planID_id=' + result[0][
-            "planID_id"] + ' ORDER BY step'
+        sql = 'SELECT ' + keystr + ' FROM ' + self.cellPlanDetailTable + ' WHERE planID_id=' + str(result[0]["planID_id"]) + ' ORDER BY step'
         result = self.executeGetSQL(sql, keys)
         return result
 
@@ -227,25 +243,25 @@ class dbClass(object):
         data = data + result
 
         sql = 'SELECT ' + keystr + ' FROM ' + self.H2ODeviceTable + ' WHERE (currState!=nextState)'
-        result = result + self.executeGetSQL(sql, keys)
+        result = self.executeGetSQL(sql, keys)
         for i in result:
             i["type"] = "H2O"
         data = data + result
 
         sql = 'SELECT ' + keystr + ' FROM ' + self.CO2DeviceTable + ' WHERE (currState!=nextState)'
-        result = result + self.executeGetSQL(sql, keys)
+        result = self.executeGetSQL(sql, keys)
         for i in result:
             i["type"] = "CO2"
         data = data + result
 
         sql = 'SELECT ' + keystr + ' FROM ' + self.CH4DeviceTable + ' WHERE (currState!=nextState)'
-        result = result + self.executeGetSQL(sql, keys)
+        result = self.executeGetSQL(sql, keys)
         for i in result:
             i["type"] = "CH4"
         data = data + result
 
         sql = 'SELECT ' + keystr + ' FROM ' + self.AIRDeviceTable + ' WHERE (currState!=nextState)'
-        result = result + self.executeGetSQL(sql, keys)
+        result = self.executeGetSQL(sql, keys)
         for i in result:
             i["type"] = "AIR"
         data = data + result
@@ -277,8 +293,14 @@ class dbClass(object):
         return result
 
     def executeInsertSQL(self, datadict, table):
-        dbconnection = pymysql.connect(host=self.host, port=self.port, user=self.user, passwd=self.passwd,
-                                       db=self.db, charset="utf8")
+        while True:
+            try:
+                dbconnection = pymysql.connect(host=self.host, port=self.port, user=self.user, passwd=self.passwd,
+                                       db=self.db,charset="utf8")
+                break
+            except Exception as e:
+                print(e)
+                print("cannot connect to mysql, retrying........................")
         cursor = dbconnection.cursor()
         ROWstr = []
         COLstr = ''
@@ -291,7 +313,7 @@ class dbClass(object):
             ss = ss + '%s' + ','
         COLstr = COLstr[:-1]
         ss = ss[:-1]
-        sql = "insert into  " + table + "(" + COLstr + ") values (" + ss + ")"
+        sql = "insert into  " + table + " (" + COLstr + ") values (" + ss + ")"
         try:
             cursor.execute(sql, ROWstr)
             dbconnection.commit()
@@ -301,12 +323,17 @@ class dbClass(object):
         dbconnection.close()
 
     def insertHistoryData(self, datadict):
-
         self.executeInsertSQL(datadict, self.cellTestHistoryDataTable)
 
     def updateGasTable(self, gastype, datadict, MFCid):
-        dbconnection = pymysql.connect(host=self.host, port=self.port, user=self.user, passwd=self.passwd,
-                                       db=self.db, charset="utf8")
+        while True:
+            try:
+                dbconnection = pymysql.connect(host=self.host, port=self.port, user=self.user, passwd=self.passwd,
+                                       db=self.db,charset="utf8")
+                break
+            except Exception as e:
+                print(e)
+                print("cannot connect to mysql, retrying........................")
         cursor = dbconnection.cursor()
         if gastype == "H2":
             table = self.H2DeviceTable
@@ -340,8 +367,14 @@ class dbClass(object):
         dbconnection.close()
 
     def updateOvenTable(self, datadict, Ovenid):
-        dbconnection = pymysql.connect(host=self.host, port=self.port, user=self.user, passwd=self.passwd,
-                                       db=self.db, charset="utf8")
+        while True:
+            try:
+                dbconnection = pymysql.connect(host=self.host, port=self.port, user=self.user, passwd=self.passwd,
+                                       db=self.db,charset="utf8")
+                break
+            except Exception as e:
+                print(e)
+                print("cannot connect to mysql, retrying........................")
         cursor = dbconnection.cursor()
         ROWstr = ''
         for key in datadict:
@@ -360,8 +393,14 @@ class dbClass(object):
         dbconnection.close()
 
     def updateCellRealData(self, cellid, datadict):
-        dbconnection = pymysql.connect(host=self.host, port=self.port, user=self.user, passwd=self.passwd,
-                                       db=self.db, charset="utf8")
+        while True:
+            try:
+                dbconnection = pymysql.connect(host=self.host, port=self.port, user=self.user, passwd=self.passwd,
+                                       db=self.db,charset="utf8")
+                break
+            except Exception as e:
+                print(e)
+                print("cannot connect to mysql, retrying........................")
         cursor = dbconnection.cursor()
         ROWstr = ''
 
@@ -375,7 +414,7 @@ class dbClass(object):
 
         ROWstr = ROWstr[:-1];
         ROWstr = ROWstr + ' '
-        sql = 'update ' + self.cellRealDataTable + ' SET ' + ROWstr + 'where (cellID_id = ' + str(cellid) + ')'
+        sql = 'update ' + self.cellTestRealDataTable + ' SET ' + ROWstr + 'where (cellID_id = ' + str(cellid) + ')'
         try:
             cursor.execute(sql)
         except Exception as e:
